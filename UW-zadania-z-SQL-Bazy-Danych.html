@@ -1,0 +1,3419 @@
+
+  Bazy danych
+
+Opis
+Funkcje i struktury systemów baz danych oraz przegląd modeli danych.
+Relacyjne bazy danych. Języki zapytań do relacyjnych baz danych (algebra
+relacji, logika pierwszego rzędu, SQL i Datalog). Projektowanie baz
+danych, teoria postaci normalnych i modelowanie encja-związek. Fizyczne
+aspekty wykonywania zapytań i składowania danych, metody optymalizacji
+zapytań, przetwarzanie transakcji i rozproszone bazy danych.
+
+
+    Sylabus
+
+
+      Autor
+
+  * Krzysztof Stencel — Uniwersytet Warszawski, Wydział Matematyki,
+    Informatyki i Mechaniki, Instytut Informatyki
+
+
+      Wymagania wstępne
+
+  * Architektura komputerów i sieci
+  * Podstawy matematyki
+  * Programowanie obiektowe
+
+
+      Zawartość
+
+  * Funkcje i struktura systemów baz danych.
+  * Przegląd różnych modeli danych.
+  * Relacyjny model danych.
+  * Operacje algebry relacji i SQL jako przykłady języków zapytań.
+  * Zależności funkcyjne i postaci normalne.
+  * Modelowanie danych - poziom pojęciowy.
+  * Modelowanie danych - poziom logiczny.
+  * Fizyczna organizacja danych w bazach danych.
+  * Fizyczne aspekty wykonywania zapytań.
+  * Modelowanie danych - poziom fizyczny.
+  * Oprogramowanie strony serwera bazy danych.
+  * Przetwarzanie transakcji.
+  * Rozproszone bazy danych.
+
+
+      Literatura
+
+  * J. Ulmann, J. Widom, /Podstawowy wykład z systemów baz danych/, WNT
+    2000.
+
+  * K. Stencel, L.Banachowski, /Bazy danych. Projektowanie aplikacji na
+    serwerze/, EXIT, 2001.
+
+
+    Moduły
+
+------------------------------------------------------------------------
+
+
+      Wykłady
+
+ 1. Wprowadzenie
+    <http://smurf.mimuw.edu.pl/external_slides/W1_Wprowadzenie_do_problematyki_baz_danych/W1_Wprowadzenie_do_problematyki_baz_danych.html>
+ 2. Relacyjny model danych
+    <http://smurf.mimuw.edu.pl/external_slides/W2_Relacyjny_model_danych/W2_Relacyjny_model_danych.html>
+ 3. Modelowanie danych Model związków-encji
+    <http://smurf.mimuw.edu.pl/external_slides/W3_Modelowanie_danych_Model_zwiazkow-encji/W3_Modelowanie_danych_Model_zwiazkow_encji.html>
+ 4. Transformacja modelu ER do modelu relacyjnego
+    <http://smurf.mimuw.edu.pl/external_slides/W4_Transformacja_modelu_ER_do_modelu_relacyjnego/W4_Transformacja_modelu_ER_do_modelu_relacyjnego.html>
+ 5. Normalizacja schematów logicznych relacji
+    <http://smurf.mimuw.edu.pl/external_slides/W5_Normalizacja_schematow_logicznych_relacji/W5_Normalizacja_schematow_logicznych_relacji.html>
+ 6. Organizacja plików
+    <http://smurf.mimuw.edu.pl/external_slides/W6_Organizacja_plikow/W6_Organizacja_plikow.html>
+ 7. Indeksy
+    <http://smurf.mimuw.edu.pl/external_slides/W7_Indeksy/W7_Indeksy.html>
+ 8. Przetwarzanie transakcyjne
+    <http://smurf.mimuw.edu.pl/external_slides/W8_Przetwarzanie_transakcyjne/W8_Przetwarzanie_transakcyjne.html>
+ 9. Algorytmy zarządzania współbieżnym wykonywaniem transakcji
+    <http://smurf.mimuw.edu.pl/external_slides/W9_Algorytmy_zarzadzaniawspolbieznym_wykonywaniem_transakcji/W9_Algorytmy_zarzadzania_wspolbieznym_wykonywaniem.html>
+10. Algorytm zarządzania współbieżnym wykonywaniem transakcji część II
+    <http://smurf.mimuw.edu.pl/external_slides/W10_Algorytm_zarzadzania_wspolbieznym_wykonywaniem_transakcji_czII/W10_Algorytm_zarzadzania_wspolbieznym_wykonywaniem.html>
+11. Recovery - Transakcyjne odtwarzanie bazy danych po awarii
+    <http://smurf.mimuw.edu.pl/external_slides/W11_Recovery_Transakcyjne_odtwarzanie_bazy_danych_po_awarii/W11_Recovery_Transakcyjne_odtwarzanie_bazy_danyc.html>
+12. Optymalizacja zapytań część I
+    <http://smurf.mimuw.edu.pl/external_slides/W12_Optymalizacja_zapytan_czesc_I/W12_Optymalizacja_zapytan_czesc_I.html>
+13. Optymalizacja zapytań część II
+    <http://smurf.mimuw.edu.pl/external_slides/W13_Optymalizacja_zapytan_czesc_II/W13_Optymalizacja_zapytan_czesc_II.html>
+
+
+  Laboratoria
+
+
+  Laboratorium 1: podstawy SQL
+
+
+        create.sql
+
+drop table wypozyczenia;
+drop table czytelnicy;
+drop table ksiazki;
+ 
+create table ksiazki (
+  nr_ew integer primary key,
+  tytul varchar(128),
+  autor varchar(64)
+);
+ 
+create table czytelnicy (
+  pesel char(11) primary key,
+  imie varchar(64),
+  nazwisko varchar(64)
+);
+ 
+create table wypozyczenia (
+  nr_ew integer references ksiazki,
+  pesel char(11) references czytelnicy,
+  data_wypozyczenia date,
+  data_zwrotu date,
+  primary key (nr_ew,pesel,data_wypozyczenia)
+);
+
+
+        dane.sql
+
+delete from wypozyczenia;
+delete from ksiazki;
+delete from czytelnicy;
+ 
+insert into ksiazki (nr_ew,tytul,autor) values (1,'Teoria wszystkiego','J. Dziamdziak');
+insert into ksiazki (nr_ew,tytul,autor) values (2,'Teoria prawie wszystkiego','J. Dziamdziak');
+insert into ksiazki (nr_ew,tytul,autor) values (3,'Teoria całkowicie wszystkiego','J. Dziamdziak');
+insert into ksiazki (nr_ew,tytul,autor) values (4,'Pan Tadeusz','A. Mickiewicz');
+insert into ksiazki (nr_ew,tytul,autor) values (5,'Balladyna','J. Słowacki');
+insert into ksiazki (nr_ew,tytul,autor) values (6,'Nieznana książka','Nieznany autor');
+ 
+insert into czytelnicy (pesel,imie,nazwisko) values ('001','Jan','Kowalski');
+insert into czytelnicy (pesel,imie,nazwisko) values ('002','Adam','Nowak');
+insert into czytelnicy (pesel,imie,nazwisko) values ('003','Alojzy','Buczkowski');
+insert into czytelnicy (pesel,imie,nazwisko) values ('004','Witold','Iksiński');
+insert into czytelnicy (pesel,imie,nazwisko) values ('005','Anna','Ygregkowska');
+insert into czytelnicy (pesel,imie,nazwisko) values ('006','Julia','Capuletti');
+insert into czytelnicy (pesel,imie,nazwisko) values ('007','James','Bond');
+insert into czytelnicy (pesel,imie,nazwisko) values ('008','Lidia','Montecchi');
+ 
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (1,'001','01-SEP-2007','15-SEP-2007');
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (1,'002','01-SEP-2006','15-SEP-2006');
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (1,'003','01-SEP-2004','15-SEP-2004');
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (1,'002','01-OCT-2007',NULL);
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (2,'005','01-SEP-2007','15-SEP-2007');
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (2,'006','04-OCT-2007',NULL);
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (2,'002',TO_DATE('2007-09-02','yyyy-mm-dd'),TO_DATE('2007-09-15','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (3,'006',TO_DATE('2007-10-03','yyyy-mm-dd'),NULL);
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (3,'007',TO_DATE('2007-09-04','yyyy-mm-dd'),TO_DATE('2007-09-15','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (3,'001',TO_DATE('2007-09-20','yyyy-mm-dd'),TO_DATE('2007-09-25','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (3,'002',TO_DATE('2007-10-01','yyyy-mm-dd'),TO_DATE('2007-10-02','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (4,'008',TO_DATE('2007-10-02','yyyy-mm-dd'),NULL);
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (4,'005',TO_DATE('2007-09-07','yyyy-mm-dd'),TO_DATE('2007-09-12','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (4,'006',TO_DATE('2007-09-02','yyyy-mm-dd'),TO_DATE('2007-09-05','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (5,'006',TO_DATE('2007-09-05','yyyy-mm-dd'),TO_DATE('2007-09-10','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (5,'002',TO_DATE('2007-09-19 12:30','yyyy-mm-dd hh24:mi'),TO_DATE('2007-09-20','yyyy-mm-dd'));
+
+
+        select.sql
+
+-- inicjalizacja pomocniczych zmiennych
+
+set pagesize 100;
+set trimspool on;
+set trimout on;
+set echo on; -- wyświetlanie poleceń SQL
+set linesize 100;
+
+-- ustawienie domyślnych rozmiarów kolumn
+
+column tytul format a30;
+column autor format a20;
+
+-- lista książek
+
+SELECT nr_ew,tytul FROM ksiazki;
+
+-- lista książek konkretnego autora
+
+SELECT * FROM ksiazki WHERE autor LIKE 'J. Dziam%';
+
+-- liczba wypożyczeń każdej z książek
+
+SELECT k.tytul,count(*) as ile
+  FROM wypozyczenia w,ksiazki k 
+ WHERE w.nr_ew=k.nr_ew
+ GROUP BY w.nr_ew,k.tytul
+ ORDER BY ile DESC;
+
+-- jeszcze nie oddane książki + dane wypożyczających
+
+SELECT TO_CHAR(w.data_wypozyczenia,'yyyy-mm-dd hh24:mi') as data_wypozyczenia,w.nr_ew,k.tytul,c.imie||' '||c.nazwisko as wypozyczajacy 
+  FROM wypozyczenia w,ksiazki k,czytelnicy c
+ WHERE w.nr_ew=k.nr_ew AND w.pesel=c.pesel
+   AND w.data_zwrotu IS NULL
+ ORDER BY w.data_wypozyczenia ASC;
+
+-- wyświetlanie dokładnego sposobu obliczania zapytania
+
+set autotrace on;
+select k.tytul,w.pesel,w.data_wypozyczenia,w.data_zwrotu from wypozyczenia w,ksiazki k WHERE w.nr_ew=k.nr_ew;
+set autotrace off;
+
+
+  Laboratorium 2: pytania SQL
+
+
+      Plan zajęć:
+
+------------------------------------------------------------------------
+
+  * przygotuj bazę zdefiniowaną w skrypcie
+
+lab02_create.sql
+
+
+drop table wypozyczenia;
+drop table czytelnicy;
+drop table ksiazki;
+ 
+create table ksiazki (
+  nr_ew integer primary key,
+  tytul varchar(128),
+  autor varchar(64)
+);
+ 
+create table czytelnicy (
+  pesel char(11) primary key,
+  imie varchar(64),
+  nazwisko varchar(64)
+);
+ 
+create table wypozyczenia (
+  nr_ew integer references ksiazki,
+  pesel char(11) references czytelnicy,
+  data_wypozyczenia date,
+  data_zwrotu date,
+  primary key (nr_ew,pesel,data_wypozyczenia)
+);
+ 
+insert into ksiazki (nr_ew,tytul,autor) values (1,'Teoria wszystkiego','J. Dziamdziak');
+insert into ksiazki (nr_ew,tytul,autor) values (2,'Teoria prawie wszystkiego','J. Dziamdziak');
+insert into ksiazki (nr_ew,tytul,autor) values (3,'Teoria całkowicie wszystkiego','J. Dziamdziak');
+insert into ksiazki (nr_ew,tytul,autor) values (4,'Pan Tadeusz','A. Mickiewicz');
+insert into ksiazki (nr_ew,tytul,autor) values (5,'Balladyna','J. Słowacki');
+insert into ksiazki (nr_ew,tytul,autor) values (6,'Nieznana książka','Nieznany autor');
+insert into ksiazki (nr_ew,tytul,autor) values (7,'Sztuka Programowania t.I','D. Knuth');
+insert into ksiazki (nr_ew,tytul,autor) values (8,'Sztuka Programowania t.II','D. Knuth');
+insert into ksiazki (nr_ew,tytul,autor) values (9,'Hobbit','J.R.R. Tolkien');
+ 
+insert into czytelnicy (pesel,imie,nazwisko) values ('001','Jan','Kowalski');
+insert into czytelnicy (pesel,imie,nazwisko) values ('002','Adam','Nowak');
+insert into czytelnicy (pesel,imie,nazwisko) values ('003','Alojzy','Buczkowski');
+insert into czytelnicy (pesel,imie,nazwisko) values ('004','Witold','Iksiński');
+insert into czytelnicy (pesel,imie,nazwisko) values ('005','Anna','Ygregkowska');
+insert into czytelnicy (pesel,imie,nazwisko) values ('006','Julia','Capuletti');
+insert into czytelnicy (pesel,imie,nazwisko) values ('007','James','Bond');
+insert into czytelnicy (pesel,imie,nazwisko) values ('008','A','Spiderman');
+insert into czytelnicy (pesel,imie,nazwisko) values ('009','B','Spiderwoman');
+insert into czytelnicy (pesel,imie,nazwisko) values ('010','C','Superman');
+ 
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (1,'001','01-SEP-2007','15-SEP-2007');
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (1,'002','01-SEP-2006','15-SEP-2006');
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (1,'003','01-SEP-2004','15-SEP-2004');
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (1,'002','01-OCT-2007',NULL);
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (2,'005','01-SEP-2007','15-SEP-2007');
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (2,'006','04-OCT-2007',NULL);
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (2,'002',TO_DATE('2008-09-02','yyyy-mm-dd'),TO_DATE('2008-09-15','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (3,'006',TO_DATE('2008-10-03','yyyy-mm-dd'),NULL);
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (3,'007',TO_DATE('2008-09-04','yyyy-mm-dd'),TO_DATE('2008-09-15','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (3,'001',TO_DATE('2008-09-20','yyyy-mm-dd'),TO_DATE('2008-09-25','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (3,'002',TO_DATE('2008-10-01','yyyy-mm-dd'),TO_DATE('2008-10-02','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (4,'008',TO_DATE('2008-10-02','yyyy-mm-dd'),NULL);
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (4,'005',TO_DATE('2008-09-07','yyyy-mm-dd'),TO_DATE('2008-09-12','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (4,'006',TO_DATE('2008-09-02','yyyy-mm-dd'),TO_DATE('2008-09-05','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (5,'006',TO_DATE('2008-09-05','yyyy-mm-dd'),TO_DATE('2008-09-10','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (5,'002',TO_DATE('2008-09-19 12:30','yyyy-mm-dd hh24:mi'),TO_DATE('2008-09-20','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (9,'005',TO_DATE('2008-09-07','yyyy-mm-dd'),NULL);
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (9,'006',TO_DATE('2008-09-02 12:30','yyyy-mm-dd hh24:mi'),TO_DATE('2008-09-10 14:56','yyyy-mm-dd hh24:mi'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (7,'006',TO_DATE('2008-09-09','yyyy-mm-dd'),TO_DATE('2008-09-12','yyyy-mm-dd'));
+insert into wypozyczenia (nr_ew,pesel,data_wypozyczenia,data_zwrotu) values 
+    (7,'002',TO_DATE('2008-09-16 17:30','yyyy-mm-dd hh24:mi'),TO_DATE('2008-09-24','yyyy-mm-dd'));
+
+# dodaj własne dane,
+# wykonaj podane niżej ćwiczenia.
+
+
+      Przydatne informacje:
+
+------------------------------------------------------------------------
+
+  * funkcje dt. dat <http://stencel.mimuw.edu.pl/bd/SQL/tips/#date.for>
+  * sysdate -- zmienna zwracająca bieżąca date,
+  * NVL(x,y) -- zwraca x jeśli x!=NULL, wpp. y,
+
+*/Ćwiczenie./* Wypisz dokładne daty wypożyczeń (łącznie z godziną)
+książek które jeszcze nie zostały zwrócone.
+
+Rozwiązanie
+
+
+SELECT pesel,nr_ew,TO_CHAR(data_wypozyczenia,'YYYY-MM-DD HH24:MI:SS') 
+  FROM wypozyczenia 
+ WHERE data_zwrotu IS NULL 
+ ORDER BY data_wypozyczenia DESC;
+
+*/Ćwiczenie./*Sprawdź poprawność wprowadzonych dat wypożyczeń i zwrotów
+książek, w szczególności:
+
+  * czy data_zwrotu < data_wypożyczenia
+  * czy data_wypożyczenia i data_zwrotu < aktualna data
+
+Rozwiązanie
+
+
+SELECT * 
+  FROM wypozyczenia 
+ WHERE data_wypozyczenia >= data_zwrotu 
+    OR data_wypozyczenia > sysdate;
+
+*/Ćwiczenie./*Dla każdego wypożyczenia wypisz jego czas (również dla
+tych, które są jeszcze wypożyczone).
+
+Rozwiązanie 1
+
+
+SELECT pesel,nr_ew,data_wypozyczenia,data_zwrotu, 
+       NVL(data_zwrotu,sysdate)-data_wypozyczenia AS roznica_w_dniach 
+  FROM wypozyczenia 
+ ORDER BY pesel,nr_ew,data_wypozyczenia;
+
+
+Rozwiązanie 2
+
+
+SELECT pesel,nr_ew,data_wypozyczenia,data_zwrotu, 
+       TRUNC((NVL(data_zwrotu,sysdate)-data_wypozyczenia)*24) AS roznica_w_godzinach 
+  FROM wypozyczenia 
+ ORDER BY pesel,nr_ew,data_wypozyczenia;
+
+
+Rozwiązanie 3
+
+
+column roznica_dokladna format a30; 
+SELECT pesel,nr_ew,data_wypozyczenia,data_zwrotu,
+       NUMTODSINTERVAL(NVL(data_zwrotu,sysdate)-data_wypozyczenia,'day') AS roznica_dokladna 
+  FROM wypozyczenia 
+ ORDER BY pesel,nr_ew,data_wypozyczenia;
+
+*/Ćwiczenie./*Wyznacz najdłużej wypożyczoną książkę (w tym te które są
+jeszcze wypożyczone).
+
+Rozwiązanie
+
+
+COLUMN tytul a25; 
+SELECT k.tytul,w.* 
+ FROM wypozyczenia w,ksiazki k 
+  WHERE w.nr_ew=k.nr_ew 
+    AND (NVL(data_zwrotu,sysdate)-data_wypozyczenia) = 
+        (SELECT MAX(NVL(data_zwrotu,sysdate)-data_wypozyczenia) FROM wypozyczenia);
+
+*/Ćwiczenie./*Dla każdej książki wyznacz jest najkrótszy i najdłuższy
+czas wypożyczenia.
+
+Rozwiązanie
+
+
+COLUMN tytul FORMAT a25; 
+SELECT nr_ew,tytul, 
+       (SELECT MIN(NVL(data_zwrotu,sysdate)-data_wypozyczenia) 
+       FROM wypozyczenia w WHERE w.nr_ew=k.nr_ew) AS min, 
+       (SELECT MAX(NVL(data_zwrotu,sysdate)-data_wypozyczenia) 
+       FROM wypozyczenia w WHERE w.nr_ew=k.nr_ew) AS max 
+FROM ksiazki k;
+
+*/Ćwiczenie./*Dla każdej osoby wyznacz dla niej średni czas wypożyczenia
+książek (pomiń trwające wypożyczenia), posortuje wg. malejącej średniej.
+
+Rozwiązanie
+
+
+SELECT pesel, 
+       (SELECT AVG(data_zwrotu-data_wypozyczenia) FROM wypozyczenia w 
+         WHERE w.pesel=c.pesel AND data_zwrotu IS NOT NULL) 
+       as sredni_czas 
+  FROM czytelnicy c 
+ ORDER BY sredni_czas DESC;
+
+*/Ćwiczenie./*Dla każdej książki wyznacz ile różnych osób ją wypożyczyło.
+
+Rozwiązanie
+
+
+SELECT k.nr_ew,k.tytul,COUNT(DISTINCT w.pesel) 
+  FROM ksiazki k LEFT JOIN wypozyczenia w ON (k.nr_ew=w.nr_ew) 
+ GROUP BY k.nr_ew,k.tytul;
+
+*/Ćwiczenie./*Wypisz tytuł i autora najczęściej wypożyczonej książki
+(lub książek jeśli jest wiele spełniających ten warunek).
+
+Rozwiązanie
+
+
+SELECT k.tytul,k.autor 
+  FROM ksiazki k 
+ WHERE 
+  (SELECT COUNT(*) FROM wypozyczenia w WHERE w.nr_ew=k.nr_ew) 
+  >= ALL 
+  (SELECT COUNT(*) FROM wypozyczenia GROUP BY nr_ew);
+
+*/Ćwiczenie./*Podaj książki, które były u czytelników w momencie
+2008-09-15 12:00.
+
+Rozwiązanie
+
+
+SELECT k.tytul,w.data_wypozyczenia,w.data_zwrotu 
+  FROM wypozyczenia w,ksiazki k 
+ WHERE w.nr_ew=k.nr_ew 
+   AND w.data_wypozyczenia < TO_DATE('2008-09-15 12:00','YYYY-MM-DD HH24:MI:SS') 
+   AND NVL(w.data_zwrotu,sysdate) > TO_DATE('2008-09-15 12:00','YYYY-MM-DD HH24:MI:SS');
+
+*/Ćwiczenie./*Podaj datę (najlepiej z dokładną godziną) podczas której
+było wypożyczonych najwięcej książek.
+
+Rozwiązanie (lista dat z ilością wypożyczonych książek):
+
+
+SELECT TO_CHAR(w.data_wypozyczenia,'yyyy-mm-dd hh24:mi') as data, 
+                    (SELECT COUNT(*) 
+                       FROM wypozyczenia ww 
+                      WHERE ww.data_wypozyczenia <= w.data_wypozyczenia 
+                        AND (ww.data_zwrotu IS NULL OR ww.data_zwrotu > w.data_wypozyczenia) 
+              ) as liczba_wypozyczonych_ksiazek 
+          FROM wypozyczenia w;
+
+*/Ćwiczenie./*Sprawdź czy jakaś książka nie była wypożyczona dwa razy w
+tym samym momencie czasu.
+
+Rozwiązanie
+
+
+SELECT w.nr_ew,w.pesel,w.data_wypozyczenia,w.data_zwrotu,ww.pesel,ww.data_wypozyczenia,ww.data_zwrotu 
+  FROM wypozyczenia w,wypozyczenia ww 
+ WHERE ww.nr_ew=w.nr_ew 
+   AND ww.data_wypozyczenia > w.data_wypozyczenia 
+   AND ww.data_wypozyczenia < NVL(w.data_zwrotu,sysdate);
+
+
+  Laboratorium 3: Kolokwium A
+
+
+      Kolokwium 1
+
+------------------------------------------------------------------------
+
+Baza zawiera dane o pewnej firmie. Są to informacje o pracownikach i ich
+bezpośrednich szefach (Pracownicy). Tabela ListaObcenosci zawiera dane o
+listach obecności, które codziennie są uzupełniane przez pracowników,
+którzy zapisują w nich swoje przyjście i wyjście z pracy (można założyć,
+że wejscie\(<\)wyjscie). Tabele Projekty i UczestnicyProjektow zawieraj¡
+informacje o projektach, które są rozwijane w firmie.
+
+CREATE TABLE Pracownicy ( 
+  id number PRIMARY KEY, 
+  imie varchar(10) NOT NULL, 
+  nazwisko varchar(10) NOT NULL, 
+  pensja number DEFAULT 0 NOT NULL, 
+  szef number REFERENCES Pracownicy
+);
+CREATE TABLE ListaObecnosci ( 
+  pracownik number REFERENCES Pracownicy NOT NULL, 
+  wejscie date NOT NULL, 
+  wyjscie date
+);
+CREATE TABLE Projekty ( 
+  id number PRIMARY KEY, 
+  nazwa varchar(10) NOT NULL, 
+  szef number REFERENCES Pracownicy, 
+  rozpoczecie date NOT NULL, 
+  zakonczenie date NOT NULL
+);
+CREATE TABLE UczestnicyProjektow ( 
+  projekt number REFERENCES Projekty NOT NULL, 
+  pracownik number REFERENCES Pracownicy NOT NULL, 
+  PRIMARY KEY (projekt,pracownik)
+);
+
+Napisz następujące zapytania SQL:
+
+ 1. Wypisać zestawienie: imię, nazwisko, pensję pracownika, oraz łączną
+    liczbę projektów, w których bierze (lub brał) on udział. Proszę
+    pamiętać, również o tych pracownikach, którzy mają tę liczbę równą
+    0. Przez biorącego udział w projekcie rozumiemy osobę, dla której
+    istnieje odpowiedni wpis w tabeli UczestnicyProjektow.
+ 2. Wypisać imię i nazwisko pracownika (lub pracowników jeśli będzie
+    takich osób więcej) biorącego udział w największej liczbie projektów.
+ 3. Wypisać id, imię i nazwisko tych osób, które nigdy nie pojawiły się
+    w pracy.
+ 4. Wypisać pracowników "oszustów" (imię + nazwisko), tzn. takich, dla
+    których istnieją co najmniej dwa różne wpisy w ListaObecnosci
+    obejmujące okresy mające niezerową część wspólną.
+ 5. Wypisać dla każdego pracownika (nawet "oszusta") łączną liczbę
+    godzin przez niego przepracowanych (ale licząc już wg sprawiedliwych
+    zasad, czyli "wielokrotnaobecność liczy się tylko raz). Zestawienie
+    powinno obejmować: imię, nazwisko i liczbę godzin.
+ 6. Wypisać pracowników (imię + nazwisko), którzy mają co najmniej dwóch
+    podwładnych (pośrednich lub bezpośrednich).
+ 7. Wypisać imiona, nazwiska pracowników, łączną liczbę ich
+    bezpośrednich i pośrednich podwładnych.
+ 8. Wypisać maksymalny okres (tzn. początek i koniec tego okresu), w
+    którym nikogo nie było w pracy (na podstawie tabeli ListaObecnosci).
+    Przyjmujemy, że zajmujemy się jedynie okresami zawartymi w
+    1.01.2007-31.12.2007.
+
+Rozwiązanie
+
+
+Wypisać zestawienie: imię, nazwisko, pensję pracownika, oraz łączną
+liczbę projektów, w których bierze (lub brał) on udział. Proszę
+pamiętać, również o tych pracownikach, którzy mają tę liczbę równą 0.
+Przez biorącego udział w projekcie rozumiemy osobę, dla której istnieje
+odpowiedni wpis w tabeli UczestnicyProjektow.
+
+SELECT imie,nazwisko, 
+(SELECT C0UNT(*)
+FROM UczestnicyProjektow up,Projekty pr 
+WHERE up.projekt=pr.id AND p.id=up.pracownik AND pr.rozpoczecie<=SYSDATE) 
+AS LiczbaProjektow 
+FROM Pracownicy p 
+ORDER BY nazwisko ASC.imie ASC;
+
+Wypisać imię i nazwisko pracownika (lub pracowników jeśli będzie takich
+osób więcej) biorącego udział w największej liczbie projektów.
+
+SELECT imie,nazwisko 
+FROM pracownicy p 
+WHERE
+(SELECT C0UNT(*) FROM UczestnicyProjektow WHERE p.id=pracownik)= 
+(SELECT MAX(liczba) FROM
+(SELECT pracownik,C0UNT(*) AS liczba FROM UczestnicyProjektow GEOUP BY pracownik)
+);
+
+Wypisać id, imię i nazwisko tych osób, które nigdy nie pojawiły się w
+pracy.
+
+SELECT id,imie,nazwisko 
+FROM pracownicy
+WHERE NOT EXISTS (SELECT * FROM ListaObecnosci WHERE pracownik=id);
+
+Wypisać pracowników "oszustów" (imię + nazwisko), tzn. takich, dla
+których istnieją co najmniej dwa różne wpisy w ListaObecnosci obejmujące
+okresy mające niezerową część wspólną.
+
+SELECT id,imie,nazwisko
+FROM pracownicy p 
+WHERE EXISTS 
+(SELECT *
+FROM ListaObecnosci 11.ListaObecnosci 12 
+WHERE 11.pracownik=p.id AND 12,pracownik=p.id AND 
+(
+(11.wejście < 12.wejście AND 12.wejście < 11.wyjście) OE
+(11.wejście = 12.wejście AND 12.wyjście != 11.wyjście)
+)
+);
+
+Wypisać dla każdego pracownika (nawet ''oszusta'') łączną liczbę godzin
+przez niego przepracowanych (ale licząc już wg sprawiedliwych zasad,
+czyli "wielokrotna" obecność liczy się tylko raz). Zestawienie powinno
+obejmować: imię, nazwisko i liczbę godzin.
+
+CREATE OE REPLACE VIEW tmp_lo AS
+(SELECT DISTINCT pracownik.wejście.wyjście 
+FROM ListaObecnosci 1 
+WHERE -- bez zagnieżdżonych odcinków
+NOT EXISTS ( SELECT * FEOM ListaObecnosci 11 
+WHERE 11.pracownik=l.pracownik
+AND (1.wejście <= 11.wejście AND 11.wyjście < 1.wyjście) 
+OE (1.wejście < 11.wejście AND 11.wyjście <= 1.wyjście)
+)
+);
+SELECT pracownik,24*SUM(LEAST(koniecl,koniec2)-początek) AS LiczbaGodzin
+FROM
+(SELECT t.pracownik,t.wejście AS początek,t.wyjście AS koniecl, 
+NVL((SELECT MIN(tt.wejście)
+FROM tmp_lo tt
+WHERE tt.pracownik=t.pracownik AND tt.wejście > t.wejście),t.wyjście) AS koniec2 
+FROM tmp_lo t)
+GEOUP BY pracownik;
+-- jak ktoś lubi to można przerobić tak by wypisywało też osoby z 0 godzin 
+
+Wypisać pracowników (imię + nazwisko), którzy mają co najmniej dwóch
+podwładnych (pośrednich lub bezpośrednich).
+
+SELECT imie,nazwisko
+FEOM pracownicy p
+WHERE (SELECT C0UNT(*) FROM pracownicy WHERE szef=p.id)>1
+OE EXISTS (SELECT * FEOM pracownicy pl.pracownicy p2 WHEEE pl.szef=p2.id AND p2.szef=p.id);
+
+Wypisać imiona, nazwiska pracowników, łączną liczbę ich bezpośrednich i
+pośrednich podwładnych.
+
+SELECT imie,nazwisko, 
+(SELECT C0UNT(*)-1 
+FROM pracownicy pp 
+CONNECT BY PRIOR pp.id=pp.szef  
+START WITH pp.id=p.id 
+) AS LiczbaPodwladnych
+FROM pracownicy p;
+
+Wypisać maksymalny okres (tzn. początek i koniec tego okresu), w którym
+nikogo nie było w pracy (na podstawie tabeli ListaObecnosci).
+Przyjmujemy, że zajmujemy się jedynie okresami zawartymi w
+1.01.2007-31.12.2007.
+
+-- trochę wolne ale działa 
+CEEATE OE EEPLACE VIEW tmp.daty AS
+(SELECT wejście AS DATA FROM ListaObecnosci) 
+UNION
+(SELECT NVL(wyjscie,sysdate) AS DATA FROM ListaObecnosci) 
+UNION
+(SELECT TO.DATE('2007-01-07','yyyy-mm-dd') AS DATA FROM dual) 
+UNION
+(SELECT T0_DATE('2007-12-31','yyyy-mm-dd') AS DATA FROM dual);
+SELECT MAX(k.data-p.DATA)*24 AS MaksymalnyCzasWGodz 
+FROM tmp_daty k,tmp_daty p 
+WHERE p.DATA < k.DATA 
+AND
+NOT EXISTS -- nikt nie konczy/rozpoczyna pracy w tym czasie 
+(SELECT * FROM ListaObecnosci
+WHERE (p.DATA < wejście AND wejście < k.DATA) 
+OR (p.DATA < wyjście AND wyjście < k.DATA))
+AND
+NOT EXISTS -- nikt nie pracuje przez cały okres p.data -- p.koniec 
+(SELECT * FROM ListaObecnosci
+WHERE (wejście <= p.DATA AND k.DATA <= wyjście));
+
+
+      Kolokwium 2
+
+------------------------------------------------------------------------
+
+Struktura bazy danych:
+
+DROP TABLE elementy_zestawow;
+DROP TABLE czesci;
+DROP TABLE zestawy;
+ 
+CREATE TABLE czesci (
+    id int PRIMARY KEY,
+    nazwa varchar(16),
+    rodzaj varchar(16), /* np. cpu, karta graficzna, */
+    cena number(10,2), /* koszt jednej części */
+    magazyn int /* liczba elementów w magazynie, może być NULL */
+);
+ 
+CREATE TABLE zestawy (
+    id int PRIMARY KEY,
+    nazwa varchar(16),
+    cena number(10,2) /* cena którą klient musi zapłacić za cały zestaw */
+);
+ 
+CREATE TABLE elementy_zestawow (
+    zestaw int REFERENCES zestawy,
+    czesc int REFERENCES czesci,
+    liczba int,
+    constraint c_liczba CHECK (liczba>0 AND liczba <10),
+    UNIQUE(zestaw,czesc)
+);
+
+Baza przedstawia system magazynowy pewnej firmy sprzedającej zestawy
+komputerowe.
+Napisz następujące zapytania SQL:
+
+ 1. Wypisz dla każdego rodzaju części minimalną i maksymalną cenę części
+    tego rodzaju.
+ 2. Wypisz części które występują w tabeli czesci, ale brak ich w
+    magazynie.
+ 3. Wypisz id, nazwę, cenę oraz koszt zestawów (przez koszt rozumiemy
+    sumę kosztów elementów zestawu).
+ 4. Wypisz id i nazwę zestawów, które mogą być wykonane w części
+    znajdujących się w magazynie (pamięta o sprawdzeniu czy w magazynie
+    jest odpowiednia liczba części).
+ 5. Wypisz pary zestawów, które składają się z dokładnie takiego samego
+    zbioru części (pomijamy liczbę części).
+ 6. Wypisz części, które nie są wykorzystywane w żadnym zestawie ale
+    znajdują się w magazynie.
+ 7. Wypisz id i nazwę części oraz liczbę zestawów w których jest ona
+    wykorzystywana.
+ 8. Wypisz id i nazwę zestawu, oraz liczbę różnych części, które należy
+    dokupić do magazynu, aby było możliwe wykonanie zestawu (np. jeśli
+    brakuje 5 części o id 100 i 6 części o id 101, to odpowiedzią jest 2).
+ 9. Wypisz id i nazwę zestawu, oraz liczbę różnych rodzajów części
+    wchodzących w jego skład.
+10. Wypisz id i nazwy zestawów, które można wykonać przy założeniu, że
+    możemy wymienić brakujące części przez inne (ale tego samego rodzaju
+    i w tej samej ilości). Pamiętaj, że w skład zestawu może wchodzić
+    więcej niż jedna część jednego rodzaju.
+
+Rozwiązanie
+
+
+DELETE FROM elementy_zestawow;
+DELETE FROM zestawy;
+DELETE FROM czesci;
+ 
+INSERT INTO czesci VALUES(1,'Obudowa A','obudowa',200,20);
+INSERT INTO czesci VALUES(2,'Obudowa B','obudowa',250,10);
+INSERT INTO czesci VALUES(3,'Obudowa C','obudowa',200,5);
+INSERT INTO czesci VALUES(4,'Obudowa D','obudowa',500,0);
+INSERT INTO czesci VALUES(5,'Obudowa nieznana','obudowa',300,100);
+ 
+INSERT INTO czesci VALUES(11,'Procesor A','procesor',2000,2);
+INSERT INTO czesci VALUES(12,'Procesor B','procesor',1050,1);
+INSERT INTO czesci VALUES(13,'Procesor C','procesor',500,50);
+INSERT INTO czesci VALUES(14,'Procesor D','procesor',500,0);
+INSERT INTO czesci VALUES(15,'Procesor E','procesor',501,20);
+ 
+INSERT INTO czesci VALUES(21,'Karta A','karta_gr',1000,1);
+INSERT INTO czesci VALUES(22,'Karta B','karta_gr',550,1);
+ 
+INSERT INTO czesci VALUES(50,'null','null',100,NULL);
+INSERT INTO czesci VALUES(88,'cos z nullem','abc',1000,NULL);
+INSERT INTO czesci VALUES(89,'cos z zerem', 'abc',999,0);
+INSERT INTO czesci VALUES(99,'cos','cos',59999,0);
+ 
+INSERT INTO zestawy VALUES(101,'Zestaw A',9999);
+INSERT INTO zestawy VALUES(102,'Zestaw B',5999);
+INSERT INTO zestawy VALUES(103,'Zestaw C',2999);
+INSERT INTO zestawy VALUES(104,'Zestaw D',12999);
+INSERT INTO zestawy VALUES(105,'Zestaw D (x2)',20999);
+INSERT INTO zestawy VALUES(106,'Zestaw Unikalny',99999);
+INSERT INTO zestawy VALUES(107,'Zestaw prosty',10);
+INSERT INTO zestawy VALUES(108,'Zestaw B (x2)',6999);
+INSERT INTO zestawy VALUES(109,'zestaw null',101); 
+ 
+INSERT INTO elementy_zestawow VALUES(101,1,1);
+INSERT INTO elementy_zestawow VALUES(101,11,1);
+INSERT INTO elementy_zestawow VALUES(101,21,1);
+ 
+INSERT INTO elementy_zestawow VALUES(102,2,1);
+INSERT INTO elementy_zestawow VALUES(102,12,1);
+INSERT INTO elementy_zestawow VALUES(102,22,2);
+ 
+INSERT INTO elementy_zestawow VALUES(103,3,1);
+INSERT INTO elementy_zestawow VALUES(103,13,1);
+ 
+INSERT INTO elementy_zestawow VALUES(104,4,1);
+INSERT INTO elementy_zestawow VALUES(104,14,1);
+ 
+INSERT INTO elementy_zestawow VALUES(105,4,2);
+INSERT INTO elementy_zestawow VALUES(105,14,2);
+ 
+INSERT INTO elementy_zestawow VALUES(106,1,1);
+INSERT INTO elementy_zestawow VALUES(106,11,1);
+INSERT INTO elementy_zestawow VALUES(106,99,1);
+ 
+INSERT INTO elementy_zestawow VALUES(107,1,1);
+ 
+INSERT INTO elementy_zestawow VALUES(108,2,2);
+INSERT INTO elementy_zestawow VALUES(108,12,2);
+INSERT INTO elementy_zestawow VALUES(108,22,3);
+ 
+INSERT INTO elementy_zestawow VALUES (109,50,1);
+
+zadanie 1
+
+SELECT rodzaj,min(cena),max(cena) FROM czesci GROUP BY rodzaj;
+
+RODZAJ            MIN(CENA)  MAX(CENA)
+---------------- ---------- ----------
+abc                     999       1000
+cos                   59999      59999
+karta_gr                550       1000
+null                    100        100
+obudowa                 200        500
+procesor                500       2000
+
+zadanie 2
+
+SELECT id,nazwa FROM czesci WHERE magazyn IS NULL OR magazyn=0;
+
+        ID NAZWA
+---------- ----------------
+         4 Obudowa D
+        14 Procesor D
+        50 null
+        88 cos z nullem
+        89 cos z zerem
+        99 cos
+
+zadanie 3
+
+SELECT z.id,z.nazwa,z.cena,
+  (SELECT sum(c.cena*ez.liczba) 
+    FROM elementy_zestawow ez,czesci c
+    WHERE ez.zestaw=z.id AND ez.czesc=c.id) AS koszt
+  FROM zestawy z;
+
+        ID NAZWA                  CENA      KOSZT
+---------- ---------------- ---------- ----------
+       101 Zestaw A               9999       3200
+       102 Zestaw B               5999       2400
+       103 Zestaw C               2999        700
+       104 Zestaw D              12999       1000
+       105 Zestaw D (x2)         20999       2000
+       106 Zestaw Unikalny       99999      62199
+       107 Zestaw prosty            10        200
+       108 Zestaw B (x2)          6999       4250
+       109 zestaw null             101        100
+
+zadanie 4
+
+SELECT z.id,z.nazwa 
+ FROM zestawy z
+ WHERE NOT EXISTS 
+   (SELECT * FROM elementy_zestawow ez,czesci c 
+     WHERE ez.zestaw=z.id AND ez.czesc=c.id
+       AND (c.magazyn IS NULL OR c.magazyn<ez.liczba));
+
+        ID NAZWA
+---------- ----------------
+       101 Zestaw A
+       103 Zestaw C
+       107 Zestaw prosty
+
+zadanie 5
+
+SELECT z1.id,z1.nazwa,z2.id,z2.nazwa
+  FROM zestawy z1,zestawy z2
+  WHERE z1.id < z2.id
+    AND NOT EXISTS (
+      (SELECT czesc FROM elementy_zestawow WHERE zestaw=z1.id)
+      MINUS
+      (SELECT czesc FROM elementy_zestawow WHERE zestaw=z2.id) 
+    )
+    AND NOT EXISTS (
+      (SELECT czesc FROM elementy_zestawow WHERE zestaw=z2.id)
+      MINUS
+      (SELECT czesc FROM elementy_zestawow WHERE zestaw=z1.id) 
+    )
+;
+
+        ID NAZWA                    ID NAZWA
+---------- ---------------- ---------- ----------------
+       102 Zestaw B                108 Zestaw B (x2)
+       104 Zestaw D                105 Zestaw D (x2)
+
+zadanie 6
+
+SELECT c.id,c.nazwa
+  FROM czesci c
+  WHERE c.magazyn>0 AND
+    NOT EXISTS (SELECT * FROM elementy_zestawow WHERE czesc=c.id);
+
+        ID NAZWA
+---------- ----------------
+         5 Obudowa nieznana
+        15 Procesor E
+
+zadanie 7
+
+SELECT c.id,c.nazwa,
+  (SELECT count(DISTINCT zestaw) FROM elementy_zestawow WHERE czesc=c.id) 
+    AS liczba_zestawow
+ FROM czesci c;
+
+        ID NAZWA            LICZBA_ZESTAWOW
+---------- ---------------- ---------------
+         1 Obudowa A                      3
+         2 Obudowa B                      2
+         3 Obudowa C                      1
+         4 Obudowa D                      2
+         5 Obudowa nieznana               0
+        11 Procesor A                     2
+        12 Procesor B                     2
+        13 Procesor C                     1
+        14 Procesor D                     2
+        15 Procesor E                     0
+        21 Karta A                        1
+        22 Karta B                        2
+        50 null                           1
+        88 cos z nullem                   0
+        89 cos z zerem                    0
+        99 cos                            1
+
+zadanie 8
+
+SELECT z.id,z.nazwa,
+  (SELECT count(*) FROM elementy_zestawow ez,czesci c 
+    WHERE ez.zestaw=z.id AND ez.czesc=c.id AND ez.liczba>nvl(c.magazyn,0)
+   ) AS brakujace_czesc
+  FROM zestawy z;
+
+        ID NAZWA            BRAKUJACE_CZESC
+---------- ---------------- ---------------
+       101 Zestaw A                       0
+       102 Zestaw B                       1
+       103 Zestaw C                       0
+       104 Zestaw D                       2
+       105 Zestaw D (x2)                  2
+       106 Zestaw Unikalny                1
+       107 Zestaw prosty                  0
+       108 Zestaw B (x2)                  2
+       109 zestaw null                    1
+
+zadanie 9
+
+SELECT z.id,z.nazwa,
+  (SELECT count(DISTINCT rodzaj) FROM elementy_zestawow ez,czesci c 
+    WHERE ez.zestaw=z.id AND ez.czesc=c.id) 
+    AS liczba_rodzajow
+ FROM zestawy z;
+
+        ID NAZWA            LICZBA_RODZAJOW
+---------- ---------------- ---------------
+       101 Zestaw A                       3
+       102 Zestaw B                       3
+       103 Zestaw C                       2
+       104 Zestaw D                       2
+       105 Zestaw D (x2)                  2
+       106 Zestaw Unikalny                3
+       107 Zestaw prosty                  1
+       108 Zestaw B (x2)                  3
+       109 zestaw null                    1
+
+zadanie 10
+
+SELECT z.id,z.nazwa
+ FROM zestawy z
+ WHERE NOT EXISTS
+   (SELECT c.rodzaj
+     FROM elementy_zestawow ez,czesci c
+     WHERE ez.zestaw=z.id AND ez.czesc=c.id
+     GROUP BY c.rodzaj
+     HAVING sum(ez.liczba) > (SELECT sum(nvl(magazyn,0)) FROM czesci WHERE rodzaj=c.rodzaj)
+   );
+
+        ID NAZWA
+---------- ----------------
+       101 Zestaw A
+       102 Zestaw B
+       103 Zestaw C
+       104 Zestaw D
+       105 Zestaw D (x2)
+       107 Zestaw prosty
+
+
+  Laboratorium 4: Kolokwium B
+
+
+      Kolokwium 1
+
+------------------------------------------------------------------------
+
+Baza zawiera informacje o przebiegu konkursów informatycznych. Są to
+informacje o konkursach (Konkursy), uczestnikach konkursów
+(UczestnicyKonkursow) oraz zgłoszeniach (Zgloszenia). W każdym konkursie
+najlepsze zespoły otrzymują nagrodę pieniężną (w wysokości zdefiniowanej
+przez kolumnę nagroda),
+liczba nagród jest jest zapisana w kolumnie liczba_nagrod. W przypadku
+remisów pomiędzy drużynami oczywiście przyznawana jest odpowiednio
+większa liczba nagród.
+
+W tabli UczestnicyKonkursow zawarta jest informacja o drużynach
+biorących udział w poszczególnych konkursach.
+
+Tabela Zgloszenia zawiera informacje o wszystkich zgłoszeniach. Kolumna
+data_zgloszenia zawiera informację o dokładnym czasie wysłania rozwiązania.
+
+Natomiast kolumna ok zawiera informację czy zgłoszenie zostało
+zaakceptowane (wartość 1) czy nie (wartość 0). Należy zwrócić uwagę, że
+w trakcie trwania konkursu drużna mogła przez przypadek zgłosić kilka
+rozwiązań, jednak po pierwszym zaakceptowaniu zadania wszystkie kolejna
+zgłoszenia powinny być ignorowane.
+
+Konkurs wygrywa drużyna, która rozwiąże największą liczbę zadań, jeśli
+jest wiele takich drużyn, to drugim kryterium jest najmniejszy czas:
+
+  * dla wszystkich rozwiązanych przez drużynę zadań, sumowany jest czas
+    od momentu rozpoczęcia konkursu do pierwszego zaakceptowanego
+    rozwiązania tego zadania, dodatkowo za każde wcześniejsze zgłoszenie
+    doliczana jest kara 20 minut.
+
+Przykładowo, jeśli drużyna rozwiązała zadanie A (nieprawidłowe
+zgłoszenia w 10 i 15 minucie, prawidłowe zgłoszenie w 25 minucie) i
+zadanie B (prawidłowe zgłoszenie w 60 minucie) to karny czas wynosi
+25+2*20+60=125 minut.
+
+create table Konkursy (                                                                           
+  nazwa varchar(20) primary key,                                                                  
+  nagroda number default '100' not null                                                           
+      check (nagroda between 1 and 1000),                                                         
+  liczba_nagrod number default '1' not null                                                       
+      check (liczba_nagrod between 1 and 10),                                                     
+  poczatek date not null,                                                                          
+  koniec date not null                                                                            
+);                                                                                                
+ 
+create table UczestnicyKonkursow (                                                                
+  konkurs varchar(20) references Konkursy not null,                                               
+  zespol varchar(20) not NULL,                                                                    
+  primary key (konkurs,zespol)                                                                    
+);                                                                                                
+ 
+create table Zgloszenia (                                                                         
+  id number primary key,                                                                          
+  konkurs varchar(20) not null,                                                                   
+  zespol varchar(20) not null,                                                                    
+  zadanie char(1) not null,                                                                       
+  data_zgloszenia date not null,                                                                  
+  ok number not null                                                                              
+      check (ok between 0 and 1),                                                                 
+  foreign key (konkurs,zespol) references UczestnicyKonkursow                                     
+);
+
+Napisz następujące zapytania SQL:
+
+ 1. wypisz nazwy i daty rozpoczęcia konkursów, uporządkowane malejąco
+    według puli nagród (w przypadku takie samej puli, rosnąco według nazw),
+ 2. wypisz nazwy konkursów, liczbę drużyn które brały w nim udział, oraz
+    liczbę zadań, które zostały rozwiązane. Wynik uporządkuj rosnąco
+    według nazw konkursów.
+ 3. wypisz identyfikatory (uporządkowane rosnąco) nieprawidłowych
+    zgłoszeń, tzn. takich, które zostały przesłane poza czasem trwania
+    konkursu
+ 4. wypisz identyfikator, konkurs, drużynę i zadanie dla zgłoszeń
+    przesłanych już po zaakceptowaniu innego zgłoszenia tego samego
+    zadania (oczywiście przez ten sam zespół, w tym samym konkursie)
+    uporządkowane rosnąco według czasów zgłoszeń,
+ 5. wypisz raport zawierający nazwę konkursu, nazwę zadania, oraz czas
+    (w minutach) po którym po raz pierwszy rozwiązano to zadanie w tym
+    konkursie. Pomiń zadania które nie zostały nigdy rozwiązane.
+ 6. wypisz raport zawierający nazwę konkursu, nazwę drużyny, liczbę
+    rozwiązanych zadań (w tym konkursie), oraz karny czas, uporządkowany
+    rosnąco według nazwy konkursu, oraz pozycji w rankingu konkursowym
+ 7. wypisz raport zawierający nazwę drużyny oraz sumę nagród
+    uporządkowany malejąco według sumy nagród
+ 8. wypisz identyfikatory (uporządkowane rosnąco) zgłoszeń dla których
+    zamiana oceny z 0 na 1 powodowałaby, że drużyna, która poprzednio
+    nie wygrała konkursu, zmieniła by swoją pozycję w rankingu na
+    pierwsze miejsce (tzn. żadna inna drużyna nie byłaby w takim
+    przypadku lepsza).
+
+Rozwiązanie
+
+
+/* zadanie 1 */
+SELECT nazwa,poczatek,nagroda*liczba_nagrod
+  FROM konkursy
+ORDER BY nagroda*liczba_nagrod DESC, nazwa ASC;
+ 
+ 
+/* zadanie 2 */
+SELECT nazwa,
+       (SELECT COUNT(*) FROM UczestnicyKonkursow WHERE nazwa=konkurs) as LiczbaDruzyn,
+       (SELECT COUNT(DISTINCT zadanie) FROM Zgloszenia WHERE nazwa=konkurs AND ok=1) as RozwiazaneZadania
+  FROM Konkursy;
+ 
+ 
+/* zadanie 3 */
+SELECT z.id,z.konkurs,z.zespol,z.zadanie
+  FROM zgloszenia z,konkursy k
+ WHERE z.konkurs=k.nazwa
+   AND (z.data_zgloszenia<k.poczatek OR z.data_zgloszenia>k.koniec)
+ ORDER BY z.id ASC;
+ 
+ 
+/* zadanie 4 */
+SELECT z.id,z.konkurs,z.zespol,z.zadanie
+  FROM zgloszenia z
+ WHERE EXISTS
+  (SELECT * FROM zgloszenia zz 
+    WHERE zz.konkurs=z.konkurs AND zz.zespol=z.zespol
+      AND zz.zadanie=z.zadanie
+      AND zz.ok=1 AND zz.data_zgloszenia<z.data_zgloszenia)
+ ORDER BY z.data_zgloszenia ASC;
+ 
+ 
+/* zadanie 5 */
+SELECT z.konkurs,z.zadanie,MIN(z.data_zgloszenia-k.poczatek)*24*60 as Czas
+  FROM zgloszenia z,konkursy k
+ WHERE z.konkurs=k.nazwa AND z.ok=1
+GROUP BY z.konkurs,z.zadanie 
+ ORDER BY z.konkurs,z.zadanie;
+ 
+/* zadanie 6 */
+DROP VIEW tw_czasy;
+CREATE VIEW tw_czasy AS
+ SELECT z.konkurs,z.zespol,z.zadanie,z.czas_rozwiazania+20*(SELECT COUNT(*) FROM zgloszenia zz WHERE zz.konkurs=z.konkurs and zz.zespol=z.zespol AND zz.zadanie=z.zadanie AND zz.data_zgloszenia<z.data_rozwiazania) as czas_w_min
+   FROM (
+	SELECT z.konkurs,z.zespol,z.zadanie,
+	       MIN(z.data_zgloszenia) as data_rozwiazania, 
+               MIN(z.data_zgloszenia-k.poczatek)*24*60 as czas_rozwiazania
+        FROM zgloszenia z,konkursy k
+       WHERE z.konkurs=k.nazwa AND z.ok=1
+       GROUP BY z.konkurs,z.zespol,z.zadanie
+  ) z;
+ 
+DROP VIEW tw_ranking;
+CREATE VIEW tw_ranking AS
+ SELECT uk.konkurs,uk.zespol,
+	(SELECT COUNT(DISTINCT zadanie) FROM zgloszenia z WHERE z.konkurs=uk.konkurs AND z.zespol=uk.zespol AND ok=1) as LiczbaZadan,
+        NVL((SELECT SUM(c.czas_w_min) FROM tw_czasy c WHERE c.konkurs=uk.konkurs AND c.zespol=uk.zespol),0) as Czas
+ FROM UczestnicyKonkursow uk
+ORDER BY uk.konkurs ASC,LiczbaZadan DESC,czas ASC;
+ 
+SELECT * FROM tw_ranking;
+ 
+ 
+/* zadanie 7 */
+/* +0.000001 jest koniecznne ze wzglŤdu na b¸Ťdy arytmetyki przy por�wnywaniu kolumny Czas */
+SELECT zespol,NVL(SUM(wygrana),0) as sumawygranych
+FROM (
+  SELECT uk.zespol,uk.konkurs,
+   (SELECT SUM(k.nagroda)
+   FROM Konkursy k
+   WHERE uk.konkurs=k.nazwa
+     AND (SELECT COUNT(*) FROM tw_ranking r,tw_ranking rr 
+           WHERE r.konkurs=k.nazwa AND rr.konkurs=k.nazwa AND rr.zespol=uk.zespol
+             AND (r.liczbaZadan>rr.liczbaZadan OR (r.liczbaZadan=rr.liczbaZadan AND r.Czas+0.000001<rr.Czas))
+         )<k.liczba_nagrod
+   ) as wygrana
+  FROM UczestnicyKonkursow uk
+)
+GROUP BY zespol
+ORDER BY NVL(SUM(wygrana),0) DESC;
+ 
+ 
+/* zadanie 8 */
+DROP VIEW tw_zgloszenia_z_czasem;
+CREATE VIEW tw_zgloszenia_z_czasem
+ AS SELECT z.*,
+     24*60*(z.data_zgloszenia-k.poczatek)+20*(SELECT COUNT(*) FROM zgloszenia zz WHERE zz.konkurs=z.konkurs AND zz.zespol=z.zespol AND zz.zadanie=z.zadanie AND zz.data_zgloszenia<z.data_zgloszenia) as czas
+ FROM Zgloszenia z,Konkursy k
+ WHERE z.konkurs=k.nazwa
+ ORDER by z.id;
+ 
+SELECT z.*
+  FROM tw_zgloszenia_z_czasem z
+  WHERE
+    z.ok=0
+    AND EXISTS ( /* zgloszenie od druzyny ktora nie jest na pierwszym miejscu */
+       SELECT * FROM tw_ranking r,tw_ranking rr WHERE r.konkurs=z.konkurs AND rr.konkurs=z.konkurs AND rr.zespol=z.zespol 
+                 AND (r.liczbaZadan>rr.liczbaZadan OR (r.liczbaZadan=rr.liczbaZadan AND r.czas+0.00001<rr.czas))
+    )
+    AND (
+      (
+       /* zgloszenie zadania, ktore nie zostalo zaakceptowane */
+       NOT EXISTS (SELECT * FROM zgloszenia zz WHERE zz.konkurs=z.konkurs AND zz.zespol=z.zespol AND zz.zadanie=z.zadanie AND zz.ok=1)
+       AND 
+       /* i przenosi na poczatek kolejki */
+       NOT EXISTS (SELECT * FROM tw_ranking r,tw_ranking rr WHERE r.konkurs=z.konkurs AND rr.konkurs=z.konkurs AND rr.zespol=z.zespol 
+                             AND ( r.liczbaZadan>rr.liczbaZadan+1 
+                                   OR (r.liczbaZadan=rr.liczbaZadan+1 AND r.czas+0.00001<rr.czas+z.czas)
+                                 )
+                  )
+      )
+      OR
+      (
+       /* zgloszenie zadania, kt�re zosta¸o zaakceptowane, ale za p�zno */
+       NOT EXISTS (SELECT * FROM zgloszenia zz 
+                            WHERE zz.konkurs=z.konkurs AND zz.zespol=z.zespol AND zz.zadanie=z.zadanie 
+                              AND zz.ok=1 AND z.data_zgloszenia>zz.data_zgloszenia)
+       AND
+       /* i przenosi na poczatek kolejki */
+       NOT EXISTS (SELECT * FROM tw_ranking r,tw_ranking rr WHERE r.konkurs=z.konkurs AND rr.konkurs=z.konkurs AND rr.zespol=z.zespol 
+                             AND ( r.liczbaZadan>rr.liczbaZadan 
+                                   OR (r.liczbaZadan=rr.liczbaZadan AND r.czas+0.00001<rr.czas+z.czas-(SELECT MIN(zz.czas) FROM tw_zgloszenia_z_czasem zz WHERE z.konkurs=zz.konkurs AND z.zespol=zz.zespol AND z.zadanie=zz.zadanie AND zz.ok=1))
+                                 )
+                  )
+      )
+    )
+  ORDER BY z.id ASC;
+ 
+
+
+      Kolokwium 2
+
+------------------------------------------------------------------------
+
+Baza zawiera informacje o przebiegu konkursów informatycznych. Są to
+informacje o konkursach (Konkursy), uczestnikach konkursów
+(UczestnicyKonkursow) oraz zgłoszeniach (Zgloszenia). W każdym konkursie
+najlepsze zespoły otrzymują nagrodę pieniężną (w wysokości zdefiniowanej
+przez kolumnę nagroda),
+liczba nagród jest jest zapisana w kolumnie liczba_nagrod. W przypadku
+remisów pomiędzy drużynami oczywiście przyznawana jest odpowiednio
+większa liczba nagród.
+
+W tabli UczestnicyKonkursow zawarta jest informacja o drużynach
+biorących udział w poszczególnych konkursach.
+
+Tabela Zgloszenia zawiera informacje o wszystkich zgłoszeniach. Kolumna
+data_zgloszenia zawiera informację o dokładnym czasie wysłania
+rozwiązania. Natomiast kolumna ok zawiera informację czy zgłoszenie
+zostało zaakceptowane (wartość 1) czy nie (wartość 0). Należy zwrócić
+uwagę, że w trakcie trwania
+konkursu drużna mogła przez przypadek zgłosić kilka rozwiązań, jednak po
+pierwszym zaakceptowaniu zadania wszystkie kolejna zgłoszenia powinny
+być ignorowane.
+
+Konkurs wygrywa drużyna, która rozwiąże największą liczbę zadań, jeśli
+jest wiele takich drużyn, to drugim kryterium jest najmniejszy czas:
+
+  * dla wszystkich zgłoszeń zadań rozwiązanych przez drużynę, sumowany
+    jest czas od momentu rozpoczęcia konkursu do czasu zgłoszenia
+    pierwszego zaakceptowanego rozwiązania.
+
+Przykładowo, jeśli drużyna rozwiązała zadanie A (nieprawidłowe
+zgłoszenia w 10 i 15 minucie, prawidłowe zgłoszenie w 25 minucie) i
+zadanie B (prawidłowe zgłoszenie w 60 minucie) to karny czas wynosi 10 +
+15 + 25 + 60 = 110 minut.
+
+create table Konkursy (                                                                           
+  nazwa varchar(20) primary key,                                                                  
+  nagroda number default '100' not null                                                           
+      check (nagroda between 1 and 1000),                                                         
+  liczba_nagrod number default '1' not null                                                       
+      check (liczba_nagrod between 1 and 10),                                                     
+  poczatek date not null,                                                                          
+  koniec date not null                                                                            
+);                                                                                                
+ 
+create table UczestnicyKonkursow (                                                                
+  konkurs varchar(20) references Konkursy not null,                                               
+  zespol varchar(20) not NULL,                                                                    
+  primary key (konkurs,zespol)                                                                    
+);                                                                                                
+ 
+create table Zgloszenia (                                                                         
+  id number primary key,                                                                          
+  konkurs varchar(20) not null,                                                                   
+  zespol varchar(20) not null,                                                                    
+  zadanie char(1) not null,                                                                       
+  data_zgloszenia date not null,                                                                  
+  ok number not null                                                                              
+      check (ok between 0 and 1),                                                                 
+  foreign key (konkurs,zespol) references UczestnicyKonkursow                                     
+);
+
+Napisz następujące zapytania SQL:
+
+ 1. wypisz identyfikatory zaakceptowanych zgłoszeń, uporządkowane
+    rosnąco według czasu zgłoszenia, oraz nazwy drużyny (w tym wypadku
+    należy wypisać nawet te zaakceptowane zgłoszenia, które powinny być
+    ignorowane)
+ 2. wypisz nazwy drużyn, liczbę konkursów w których brały udział, oraz
+    liczbę zadań, które zostały rozwiązane. Wynik uporządkuj rosnąco
+    według nazw drużyn.
+ 3. wypisz identyfikatory (uporządkowane rosnąco) nieprawidłowych
+    zgłoszeń, tzn. takich, które zostały przesłane po zakończeniu konkursu
+ 4. wypisz identyfikator, konkurs, drużynę i zadanie dla zgłoszeń które
+    nie zostały zignorowane (czyli nie zostały przesyłane po
+    zaakceptowaniu innego zgłoszenia tego samego zadania) uporządkowane
+    rosnąco według czasów zgłoszeń,
+ 5. wypisz raport zawierający nazwę konkursu, nazwę zadania, oraz czas
+    (w minutach) po którym po raz ostatni rozwiązano to zadanie w tym
+    konkursie (oczywiście pomijamy ignorowane zgłoszenia). Pomiń zadania
+    które nie zostały nigdy rozwiązane.
+ 6. wypisz raport zawierający nazwę konkursu, nazwę drużyny, liczbę
+    rozwiązanych zadań (w tym konkursie), oraz karny czas, uporządkowany
+    rosnąco według nazwy konkursu, oraz pozycji w rankingu konkursowym
+ 7. wypisz raport zawierający nazwę drużyny oraz sumę nagród
+    uporządkowany malejąco według sumy nagród
+ 8. wypisz identyfikatory (uporządkowane rosnąco) zgłoszeń dla których
+    zamiana oceny z 0 na 1 powodowałaby, że drużyna, która poprzednio
+    nie wygrała konkursu, zmieniła by swoją pozycję w rankingu na
+    pierwsze miejsce (tzn. żadna inna drużyna nie byłaby w takim
+    przypadku lepsza).
+
+Rozwiązanie
+
+
+/* zadanie 1 */
+SELECT z.id,z.konkurs,z.zespol,z.zadanie,TO_CHAR(z.data_zgloszenia,'YYYY-MM-DD HH24:MI:SS') as data
+  FROM zgloszenia z
+ WHERE z.ok=1
+ ORDER BY z.data_zgloszenia, z.zespol;
+ 
+ 
+/* zadanie 2 */
+CREATE OR REPLACE VIEW tw_zadania_druzyn AS 
+    SELECT distinct zespol,zadanie,konkurs FROM zgloszenia WHERE ok=1;
+ 
+SELECT uk.zespol,
+       COUNT(*) as LiczbaKonkursow,
+       (SELECT COUNT(*) FROM tw_zadania_druzyn tmp WHERE uk.zespol=tmp.zespol) as RozwiazaneZadania
+  FROM UczestnicyKonkursow uk GROUP by uk.zespol ORDER by uk.zespol;
+ 
+/* zadanie 3 */
+SELECT z.id,z.konkurs,z.zespol,z.zadanie
+  FROM zgloszenia z,konkursy k
+ WHERE z.konkurs=k.nazwa
+   AND (z.data_zgloszenia>k.koniec)
+ ORDER BY z.id ASC;
+ 
+ 
+/* zadanie 4 */
+SELECT z.id,z.konkurs,z.zespol,z.zadanie
+  FROM zgloszenia z
+ WHERE NOT EXISTS
+  (SELECT * FROM zgloszenia zz 
+    WHERE zz.konkurs=z.konkurs AND zz.zespol=z.zespol
+      AND zz.zadanie=z.zadanie
+      AND zz.ok=1 AND zz.data_zgloszenia<z.data_zgloszenia)
+ ORDER BY z.data_zgloszenia ASC;
+ 
+ 
+/* zadanie 5 */
+SELECT z.konkurs,z.zadanie,MAX(z.data_zgloszenia-k.poczatek)*24*60 as Czas
+  FROM zgloszenia z,konkursy k
+ WHERE z.konkurs=k.nazwa AND z.ok=1
+   AND NOT EXISTS (SELECT * FROM zgloszenia zz WHERE zz.konkurs=z.konkurs AND zz.zespol=z.zespol AND zz.zadanie=z.zadanie
+                      AND zz.ok=1 AND zz.data_zgloszenia<z.data_zgloszenia)
+GROUP BY z.konkurs,z.zadanie 
+ ORDER BY z.konkurs,z.zadanie;
+ 
+/* zadanie 6 */
+DROP VIEW tw_czasy2;
+CREATE OR REPLACE VIEW tw_czasy2 AS
+	SELECT z.konkurs,z.zespol,z.zadanie,
+           SUM(z.data_zgloszenia-k.poczatek)*24*60 as czas_w_min
+        FROM zgloszenia z,konkursy k
+       WHERE z.konkurs=k.nazwa
+         AND NOT EXISTS (SELECT * FROM zgloszenia zz WHERE z.konkurs=zz.konkurs AND z.zadanie=zz.zadanie AND z.zespol=zz.zespol
+                         AND zz.ok=1 AND zz.data_zgloszenia<z.data_zgloszenia)
+         AND EXISTS (SELECT * FROM zgloszenia zz WHERE z.konkurs=zz.konkurs AND z.zadanie=zz.zadanie AND z.zespol=zz.zespol
+                         AND zz.ok=1 AND zz.data_zgloszenia>=z.data_zgloszenia)
+         GROUP BY z.konkurs,z.zespol,z.zadanie
+  ;
+ 
+DROP VIEW tw_ranking2;
+CREATE OR REPLACE VIEW tw_ranking2 AS
+ SELECT uk.konkurs,uk.zespol,
+	(SELECT COUNT(DISTINCT zadanie) FROM zgloszenia z WHERE z.konkurs=uk.konkurs AND z.zespol=uk.zespol AND ok=1) as LiczbaZadan,
+        NVL((SELECT SUM(c.czas_w_min) FROM tw_czasy2 c WHERE c.konkurs=uk.konkurs AND c.zespol=uk.zespol),0) as Czas
+ FROM UczestnicyKonkursow uk
+ORDER BY uk.konkurs ASC,LiczbaZadan DESC,czas ASC;
+ 
+SELECT * FROM tw_ranking2;
+ 
+ 
+/* zadanie 7 */
+/* +0.000001 jest koniecznne ze wzglŤdu na b¸Ťdy arytmetyki przy por�wnywaniu kolumny Czas */
+SELECT zespol,NVL(SUM(wygrana),0) as sumawygranych
+FROM (
+  SELECT uk.zespol,uk.konkurs,
+   (SELECT SUM(k.nagroda)
+   FROM Konkursy k
+   WHERE uk.konkurs=k.nazwa
+     AND (SELECT COUNT(*) FROM tw_ranking2 r,tw_ranking2 rr 
+           WHERE r.konkurs=k.nazwa AND rr.konkurs=k.nazwa AND rr.zespol=uk.zespol
+             AND (r.liczbaZadan>rr.liczbaZadan OR (r.liczbaZadan=rr.liczbaZadan AND r.Czas+0.000001<rr.Czas))
+         )<k.liczba_nagrod
+   ) as wygrana
+  FROM UczestnicyKonkursow uk
+)
+GROUP BY zespol
+ORDER BY NVL(SUM(wygrana),0) DESC;
+ 
+ 
+/* zadanie 8 */
+ 
+DROP VIEW tw_zgloszenia_z_czasem2;
+CREATE OR REPLACE VIEW tw_zgloszenia_z_czasem2
+ AS SELECT z.*,
+     (SELECT SUM(zz.data_zgloszenia-k.poczatek)*24*60 FROM zgloszenia zz WHERE zz.konkurs=z.konkurs AND zz.zespol=z.zespol AND zz.zadanie=z.zadanie AND zz.data_zgloszenia<z.data_zgloszenia) as czas
+ FROM Zgloszenia z,Konkursy k
+ WHERE z.konkurs=k.nazwa
+ ORDER by z.id;
+ 
+SELECT z.*
+  FROM tw_zgloszenia_z_czasem2 z
+  WHERE
+    z.ok=0
+    AND EXISTS ( /* zgloszenie od druzyny ktora nie jest na pierwszym miejscu */
+       SELECT * FROM tw_ranking2 r,tw_ranking2 rr WHERE r.konkurs=z.konkurs AND rr.konkurs=z.konkurs AND rr.zespol=z.zespol 
+                 AND (r.liczbaZadan>rr.liczbaZadan OR (r.liczbaZadan=rr.liczbaZadan AND r.czas+0.00001<rr.czas))
+    )
+    AND (
+      (
+       /* zgloszenie zadania, ktore nie zostalo zaakceptowane */
+       NOT EXISTS (SELECT * FROM zgloszenia zz WHERE zz.konkurs=z.konkurs AND zz.zespol=z.zespol AND zz.zadanie=z.zadanie AND zz.ok=1)
+       AND 
+       /* i przenosi na poczatek kolejki */
+       NOT EXISTS (SELECT * FROM tw_ranking2 r,tw_ranking2 rr WHERE r.konkurs=z.konkurs AND rr.konkurs=z.konkurs AND rr.zespol=z.zespol 
+                             AND ( r.liczbaZadan>rr.liczbaZadan+1 
+                                   OR (r.liczbaZadan=rr.liczbaZadan+1 AND r.czas+0.00001<rr.czas+z.czas)
+                                 )
+                  )
+      )
+      OR
+      (
+       /* zgloszenie zadania, kt�re zosta¸o zaakceptowane, ale za p�zno */
+       NOT EXISTS (SELECT * FROM zgloszenia zz 
+                            WHERE zz.konkurs=z.konkurs AND zz.zespol=z.zespol AND zz.zadanie=z.zadanie 
+                              AND zz.ok=1 AND z.data_zgloszenia>zz.data_zgloszenia)
+       AND
+       /* i przenosi na poczatek kolejki */
+       NOT EXISTS (SELECT * FROM tw_ranking2 r,tw_ranking2 rr WHERE r.konkurs=z.konkurs AND rr.konkurs=z.konkurs AND rr.zespol=z.zespol 
+                             AND ( r.liczbaZadan>rr.liczbaZadan 
+                                   OR (r.liczbaZadan=rr.liczbaZadan AND r.czas+0.00001<rr.czas+z.czas-(SELECT MIN(zz.czas) FROM tw_zgloszenia_z_czasem2 zz WHERE z.konkurs=zz.konkurs AND z.zespol=zz.zespol AND z.zadanie=zz.zadanie AND zz.ok=1))
+                                 )
+                  )
+      )
+    )
+  ORDER BY z.id ASC;
+
+
+      Skrypty tworzące bazę danych
+
+------------------------------------------------------------------------
+
+create table Konkursy (
+  nazwa varchar(20) primary key,
+  nagroda number default '100' not null
+      check (nagroda between 1 and 1000),
+  liczba_nagrod number default '1' not null
+      check (liczba_nagrod between 1 and 10),
+  poczatek date not null,
+  koniec date not null
+);
+ 
+create table UczestnicyKonkursow (
+  konkurs varchar(20) references Konkursy not null,
+  zespol varchar(20) not NULL,
+  primary key (konkurs,zespol)
+);
+ 
+create table Zgloszenia (
+  id number primary key,
+  konkurs varchar(20) not null,
+  zespol varchar(20) not null,
+  zadanie char(1) not null,
+  data_zgloszenia date not null,
+  ok number not null
+      check (ok between 0 and 1),
+  foreign key (konkurs,zespol) references UczestnicyKonkursow
+);
+
+
+      Przykładowe dane
+
+------------------------------------------------------------------------
+
+delete from Zgloszenia;
+delete from UczestnicyKonkursow;
+delete from Konkursy;
+ 
+insert into Konkursy values ('BD2010',50,2,'25-OCT-10','26-OCT-10');
+insert into Konkursy values ('AISD2010',100,1,'1-OCT-10','20-OCT-10');
+insert into Konkursy values ('BD2009',60,3,'25-OCT-09','26-OCT-09');
+ 
+insert into UczestnicyKonkursow values ('BD2010','Z1');
+insert into UczestnicyKonkursow values ('BD2010','Z2');
+insert into UczestnicyKonkursow values ('BD2010','Z3');
+insert into UczestnicyKonkursow values ('BD2010','Z4');
+insert into UczestnicyKonkursow values ('BD2010','Z6');
+insert into UczestnicyKonkursow values ('AISD2010','Z1');
+insert into UczestnicyKonkursow values ('AISD2010','Z2');
+insert into UczestnicyKonkursow values ('AISD2010','Z5');
+insert into UczestnicyKonkursow values ('AISD2010','Z6');
+insert into UczestnicyKonkursow values ('AISD2010','Z7');
+ 
+insert into Zgloszenia values(1,'BD2010','Z1','A','25-OCT-10',0);
+insert into Zgloszenia values(2,'BD2010','Z1','A',to_date('2010-10-26 00:00', 'yyyy-mm-dd hh24:mi'),1);
+insert into Zgloszenia values(3,'BD2010','Z2','A',to_date('2010-10-25 00:00', 'yyyy-mm-dd hh24:mi'),0);
+insert into Zgloszenia values(4,'BD2010','Z2','A',to_date('2010-10-25 00:11', 'yyyy-mm-dd hh24:mi'),0);
+insert into Zgloszenia values(5,'BD2010','Z2','A',to_date('2010-10-25 00:22', 'yyyy-mm-dd hh24:mi'),1);
+insert into Zgloszenia values(6,'BD2010','Z2','A',to_date('2010-10-25 00:33', 'yyyy-mm-dd hh24:mi'),0);
+insert into Zgloszenia values(7,'BD2010','Z2','B',to_date('2010-10-25 01:42', 'yyyy-mm-dd hh24:mi'),1);
+insert into Zgloszenia values(8,'BD2010','Z6','C',to_date('2010-10-26 00:20', 'yyyy-mm-dd hh24:mi'),1);
+ 
+ 
+insert into Zgloszenia values(10,'AISD2010','Z1','A',to_date('2010-10-01 00:10', 'yyyy-mm-dd hh24:mi'),0);
+insert into Zgloszenia values(11,'AISD2010','Z1','A',to_date('2010-10-01 00:20', 'yyyy-mm-dd hh24:mi'),0);
+insert into Zgloszenia values(12,'AISD2010','Z1','A',to_date('2010-10-01 01:00', 'yyyy-mm-dd hh24:mi'),1);
+insert into Zgloszenia values(13,'AISD2010','Z2','A',to_date('2010-10-01 01:10', 'yyyy-mm-dd hh24:mi'),0);
+insert into Zgloszenia values(14,'AISD2010','Z2','A',to_date('2010-10-01 02:10', 'yyyy-mm-dd hh24:mi'),1);
+insert into Zgloszenia values(15,'AISD2010','Z5','A',to_date('2010-10-01 01:30', 'yyyy-mm-dd hh24:mi'),0);
+insert into Zgloszenia values(16,'AISD2010','Z5','A',to_date('2010-10-01 03:00', 'yyyy-mm-dd hh24:mi'),1);
+insert into Zgloszenia values(17,'AISD2010','Z6','B',to_date('2010-10-01 00:11', 'yyyy-mm-dd hh24:mi'),1);
+insert into Zgloszenia values(18,'AISD2010','Z7','C',to_date('2010-10-01 00:01', 'yyyy-mm-dd hh24:mi'),0);
+
+
+  Laboratorium 5: SQL PLUS
+
+
+      Podstawowa składnia
+
+------------------------------------------------------------------------
+
+[
+ DECLARE
+    deklaracje (np. zmiennych, stałych)
+]
+BEGIN
+  polecenia programu
+[
+ EXCEPTION
+    obsługa błędów
+]
+END;
+
+
+      Zmienne
+
+------------------------------------------------------------------------
+
+Dostępne typy zmiennych:
+
+  * liczbowe: BINARY_INTEGER, DEC, DECIMAL, FLOAT, INT, INTGER, NATURAL,
+    NUMBER, NUMERIC, PLS_INTEGER, POSITIVE, REAL, SMALLINT,
+  * znakowe: CHAR, CHARACTER, LONG, NCHAR, NVARCHAR2, RAW, STRING,
+    VARCHAR, VARCHAR2,
+  * logiczne: BOOLEAN,
+  * czasowe: DATE, TIMESTAMP, INTERVAL,
+  * czasowe: DATE, TIMESTAMP, INTERVAL,
+  * wskaźnikowe: REF CURSOR, REF object_type
+
+Przykaady deklaracji:
+
+DECLARE
+ i NUMBER(10);
+ j INT := 10;
+ DATA DATE NOT NULL DEFAULT DATE '2007-01-01';
+ ok BOOLEAN NOT NULL DEFAULT FALSE;
+ s VARCHAR(100) := 'ala ma kota';
+
+Zmienne złożone:
+
+DECLARE
+ TYPE t_punkt IS RECORD (
+  x INT,
+  y INT
+ );
+ p1 t_punkt;
+
+Dostęp do poszczególnych pól jak w Pascalu/C (czyli np. p1.x).
+Atrybuty %TYPE i %ROWTYPE służą do sprawdzania typu określonych
+pól/wierszy w tabelach.
+
+DECLARE
+ zmienna tabela.pole%TYPE;
+ wiersz tabela%ROWTYPE;
+
+Stałe
+
+DECLARE
+  nazwa CONSTANT typ := wartość;
+
+
+      Interakcja z użytkownikiem
+
+------------------------------------------------------------------------
+
+Blok może zawierać zmienne podstawienia (czyli nazwy zmiennych
+poprzedzone znakiem '&'), przed uruchomieniem bloku użytkownik jest
+proszony o podanie wartości wszystkich zmiennych podstawieniowych.
+
+s:=&abc;
+i:=&identyfikator;
+
+Do wypisywania komunikatów służy funkcja dbms_output.put_line()
+
+dbms_output.put_line('i='||i||' s='||s);
+
+
+      Instrukcje warunkowe
+
+------------------------------------------------------------------------
+
+Składnia polecania IF:
+
+IF warunek THEN
+  polecenia
+(
+  ELSIF warunek_x THEN
+    polecenia
+)*
+[
+  ELSE
+    polecenia
+]
+END IF;
+
+Składnia polecania CASE:
+
+CASE wyrażenie
+  WHEN wartość THEN polecenia1
+  WHEN wartość_2 THEN polecenia2
+[
+  ELSE
+    polecenia
+]
+END [ CASE ];
+ 
+CASE
+  WHEN warunek_1 THEN polecenia
+  WHEN warunek_2 THEN polecenia2
+[
+  ELSE
+    polecenia
+]
+END [ CASE ];
+
+Jeśli CASE jest traktowane jako wyra»enie to można kończyć ENDem, jeśli jako
+polecenie to trzeba je zakończyć END CASE.
+
+
+      Pętle
+
+------------------------------------------------------------------------
+
+Składnia polecenia LOOP:
+
+LOOP
+  sekwencja
+  [ IF warunek THEN EXIT; END IF; ]
+  [ EXIT WHEN warunek ; ]
+END LOOP;
+
+Składnia polecania WHILE:
+
+WHILE warunek LOOP
+  polecenia
+END LOOP;
+
+Składnia polecenia FOR:
+
+FOR licznik IN [ REVERSE ] start..koniec LOOP
+  polecenia
+END LOOP;
+
+Nie jest konieczne definiowanie zmiennej licznik.
+
+
+      Różności
+
+------------------------------------------------------------------------
+
+  * instrukcja NULL (instrukcja która nic nie robi, wypełniacz pustych
+    bloków),
+
+
+      Zapytania SQL w PL/SQL
+
+------------------------------------------------------------------------
+
+SELECT lista pól INTO lista zmiennych FROM ... ;
+ 
+INSERT INTO tabela (lista pól) VALUES (lista warto±ci);
+ 
+INSERT INTO tabela VALUES zmienna_wierszowa;
+ 
+/* pseudokolumna ROW */
+ 
+UPDATE tabela SET row = zmienna_wierszowa;
+
+
+      Kursory
+
+------------------------------------------------------------------------
+
+DECLARE
+  CURSOR nazwa [ (parametry) ] IS
+    { zapytanie_sql | RETURN typ złożony }
+    [ FOR UPDATE [ OF lista pól ] ]
+
+Przykłady:
+
+DECLARE
+  CURSOR cur_osoby IS SELECT * FROM osoby;
+  CURSOR cur_osoby2 RETURN osoby%ROWTYPE;
+  CURSOR cur_wypozyczenia (p_pesel wypozyczenia%TYPE) IS
+    SELECT * FROM wypozycznia WHERE pesel=p_pesel;
+
+Operacje na kursorach:
+
+OPEN nazwa_kursora [ ( warto±ci parametrów) ];
+ 
+FETCH nazwa_kursora INTO { lista_zmiennych | zmienna wierszowa } ;
+ 
+CLOSE nazwa_kursora;
+
+Atrybuty kursora:
+
+%ISOPEN
+%FOUND
+%NOTFOUND
+%ROWCOUNT
+
+Pętle FOR z użyciem kursorów:
+
+FOR { zmienna rekordowa | zmienna wierszowa } IN nazwa_kursora LOOP
+  polecenia
+END LOOP;
+
+Nie jest konieczne otwieranie lub zamykanie kursora. Nie jest równie»
+konieczne
+definiowanie zmiennej licznikowej.
+
+Pętle FOR z zapytaniem SQL:
+
+FOR { zmienna rekordowa | zmienna wierszowa } IN ( zapytanie SQL ) LOOP
+  polecenia
+END LOOP;
+
+Kursor niejawny ma nazwę SQL (ostatnie wykonywane polecenie SELECT INTO,
+INSERT, UPDATE, DELETE).
+
+
+      Obsługa wyjątków
+
+------------------------------------------------------------------------
+
+DECLARE
+  wyj1 EXCEPTION;
+  wyj2 EXCEPTION;
+BEGIN
+  polecenia ...
+  RAISE wyjątek;
+EXCEPTION
+  WHEN wyj1 THEN
+    polecenia1
+  WHEN wyj2 THEN
+    polecenia2
+[ WHEN OTHERS THEN
+    polecenia..      ]
+END;
+
+Predefiniowane wyjątki:
+
+CASE_NOT_FOUND
+CURSOR_ALREADY_OPEN
+DUP_VAL_ON_INDEX
+INVALID_CURSOR
+NO_DATA_FOUND
+TOO_MANY_ROWS
+VALUE_ERROR
+ZERO_DIVIDE
+
+Przydatne informacje:
+
+  * polecenie set serveroutput on aktywuje wypisywanie komunikatów przez
+    funkcję put_line,
+
+*/Ćwiczenie./* Wypisz przy użyciu PL/SQLa bieżącą datę i godzinę
+
+Rozwiązanie
+
+
+BEGIN 
+    dbms_output.put_line('Aktualna data: '||to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')); 
+END; 
+/
+
+*/Ćwiczenie./* Oblicz 15-tą liczbę Fibonacciego.
+
+Rozwiązanie
+
+
+DECLARE
+ i INT;
+ j INT;
+ tmp INT;
+ n INT;
+ BEGIN
+ /* fib(0)=fib(1)=1 */
+ i:=1;j:=1;
+ FOR n IN 1..15 LOOP
+    dbms_output.put_line('fib('||n||')='||j);
+    tmp:=i+j;
+    i:=j;
+    j:=tmp;
+  END LOOP;
+END;
+ /
+
+*/Ćwiczenie./* Zmodyfikuj poprzednie rozwiązanie, tak by użytkownik mógł
+wskazywać która liczbę fibonacciego należy obliczyć.
+
+Rozwiązanie
+
+
+DECLARE
+ i INT;
+ j INT;
+ tmp INT;
+ ii INT;
+ n INT;
+ BEGIN
+ /* fib(0)=fib(1)=1 */
+ i:=1;j:=1;n:=&podaj_n;
+ FOR ii IN 2..n LOOP
+    tmp:=i+j;
+    i:=j;
+    j:=tmp;
+  END LOOP;
+ dbms_output.put_line('fib('||n||')='||j);
+END;
+/
+
+*/Ćwiczenie./* Wypisz reprezentację słowną liczby podanej przez
+użytkownika (jeśli liczba nie będzie z zakresu 0..99, możesz wypisać
+komunikat o błędzie).
+
+Rozwiązanie
+
+
+DECLARE 
+ i INT;
+ s1 VARCHAR(100) :='';
+ s2 VARCHAR(100) :='';
+BEGIN
+  i:=1;
+  s1:=CASE FLOOR(i/10) 
+    WHEN 9 THEN 'dziewięćdziesiąt'
+    WHEN 8 THEN 'osiemdziesiąt'
+    WHEN 7 THEN 'siedemdziesiąt'
+    WHEN 6 THEN 'sześćdziesiąt'
+    WHEN 5 THEN 'pięćdziesiąt'
+    WHEN 4 THEN 'czterdzieści'
+    WHEN 3 THEN 'trzydzieści'
+    WHEN 2 THEN 'dwadzieścia'
+    ELSE ''
+ END; 
+ 
+ IF i&gt;=10 AND i&lt;=20 THEN
+   s2:=CASE i 
+    WHEN 19 THEN 'dziewiętnaście'
+    WHEN 18 THEN 'osiemnaście'
+    WHEN 17 THEN 'siedemnaście'
+    WHEN 16 THEN 'szesnaście'
+    WHEN 15 THEN 'piętnaście'
+    WHEN 14 THEN 'czternaście'
+    WHEN 13 THEN 'trzynaście'
+    WHEN 12 THEN 'dwanaście'
+    WHEN 11 THEN 'jedenaście'
+    WHEN 10 THEN 'dziesięć'
+  END; 
+ 
+ ELSIF i=0 THEN
+   s2:='zero';
+ ELSE
+   s2:=CASE i MOD 10 
+    WHEN 9 THEN 'dziewięć'
+    WHEN 8 THEN 'osiem'
+    WHEN 7 THEN 'siedem'
+    WHEN 6 THEN 'sześć'
+    WHEN 5 THEN 'pięć'
+    WHEN 4 THEN 'cztert'
+    WHEN 3 THEN 'trzy'
+    WHEN 2 THEN 'dwa'
+    WHEN 1 THEN 'jeden'
+  END; 
+ END IF;
+ 
+ dbms_output.put_line(s1||' '||s2);
+END;
+/
+
+*/Ćwiczenie./* Wypisz liczbę wierszy w tabeli ksiazki.
+
+Rozwiązanie
+
+
+DECLARE
+  ile INT;
+BEGIN
+  SELECT COUNT(*) INTO ile FROM ksiazki;
+  dbms_output.put_line('liczb wierszy w tabeli ksiazki: '||ile);
+END;
+/
+
+*/Ćwiczenie./* Dla każdej tabeli zdefiniowanej w bazie danych, wpisz jej
+nazwę i liczbę wierszy (wskazówka: użyj widoku systemowego USER_TABLES
+lub tabeli ALL_TABLES)
+
+Rozwiązanie
+
+
+DECLARE 
+ t USER_TABLES%ROWTYPE;
+ q VARCHAR(200);
+ c INT;
+BEGIN
+FOR t IN (SELECT ut.TABLE_NAME,ut.NUM_ROWS FROM USER_TABLES ut) LOOP
+  dbms_output.put_line(t.table_name||' liczba wierszy: '||t.num_rows);
+END LOOP;
+/* można też wykorzystać dynamiczne zapytania SQL */
+FOR t IN (SELECT * FROM USER_TABLES) LOOP
+  q:='SELECT COUNT(*) FROM '||t.table_name;
+  BEGIN
+    EXECUTE IMMEDIATE q INTO c;
+    dbms_output.put_line(t.table_name||' liczba wierszy: '||c);
+  EXCEPTION
+    WHEN OTHERS THEN
+      dbms_output.put_line('blad przy sprawdzaniu rozmiaru tabeli '||t.table_name);
+  END;
+END LOOP;
+END;
+/
+
+*/Ćwiczenie./* Wypisz dla każdej książki jej najdłuższy czas wypożyczenia.
+
+Rozwiązanie
+
+
+DECLARE 
+ CURSOR cur_k IS SELECT * FROM ksiazki;
+ k ksiazki%ROWTYPE;
+ c FLOAT;
+BEGIN
+ OPEN cur_k;
+ LOOP
+   FETCH cur_k INTO k;
+   EXIT WHEN cur_k%NOTFOUND;
+   SELECT MAX(NVL(data_zwrotu,sysdate)-data_wypozyczenia) 
+     INTO c 
+     FROM wypozyczenia 
+    WHERE nr_ew=k.nr_ew;
+   dbms_output.put_line(k.nr_ew||', '||k.tytul||', max : '||TO_CHAR(c,'9999999D999'));
+ END LOOP;
+ CLOSE cur_k;
+END;
+/
+
+*/Ćwiczenie./* Sprawdź czy w bazie istnieje czytelnik o numerze pesel
+999 i jeśli brak takiej osoby dodaj wiersz z jej opisem.
+
+Rozwiązanie
+
+
+DECLARE
+ CURSOR cur_c(p_pesel czytelnicy.pesel%TYPE) IS SELECT * FROM czytelnicy WHERE pesel=p_pesel;
+ o czytelnicy%ROWTYPE;
+BEGIN
+ OPEN cur_c('999');
+ FETCH cur_c INTO o;
+ IF cur_c%FOUND THEN
+   dbms_output.put_line('osoba 999 już istnieje');
+ ELSE
+   dbms_output.put_line('osoba 999 jeszcze nie istnieje');
+   o.pesel:='999'; o.imie:='Gall'; o.nazwisko:='Anonim';
+   INSERT INTO czytelnicy VALUES o;
+   COMMIT;
+ END IF;
+END;
+/
+
+*/Ćwiczenie./* Wyświetl trzy najczęściej wypożyczne książki (jeśli jest
+wiele książek o tej samej liczbie wypożyczeń, posortuj wyniki wg.
+tytułu). Wskazówka: uwzględnij atrybut %ROWCOUNT.
+
+Rozwiązanie
+
+
+DECLARE
+ CURSOR cur_k IS 
+    SELECT k.nr_ew,k.tytul,COUNT(*) AS liczba_wypozyczen 
+     FROM ksiazki k LEFT JOIN wypozyczenia w ON (k.nr_ew=w.nr_ew)
+    GROUP BY k.nr_ew,k.tytul
+    ORDER BY liczba_wypozyczen DESC,k.tytul ASC;
+ r cur_k%ROWTYPE; 
+BEGIN
+ FOR r IN cur_k LOOP
+   EXIT WHEN cur_k%ROWCOUNT&gt;3;
+   dbms_output.put_line('wiersz '||cur_k%ROWCOUNT||': '||r.nr_ew||', '||r.tytul||', liczba wypożyczeń: '||r.liczba_wypozyczen);
+ END LOOP;
+END;
+/
+
+*/Ćwiczenie./* Sprawdź czy istnieje książka o numerze ewidecyjnym 15.
+Użyj obsługi wyjątków.
+
+Rozwiązanie
+
+
+DECLARE
+ r ksiazki%ROWTYPE; 
+ nr INT := 15;
+BEGIN
+ SELECT * INTO r FROM ksiazki WHERE nr_ew=nr;
+ dbms_output.put_line('książka o numerze '||nr||' istnieje ('||r.tytul||')');
+EXCEPTION
+ WHEN NO_DATA_FOUND THEN
+   dbms_output.put_line('brak książki o numerze '||nr);
+END;
+/
+
+
+  Laboratorium 6: kursory, wyzwalacze, procedury
+
+
+      Przydatne informacje:
+
+------------------------------------------------------------------------
+
+  * sprawdzanie błędów kompilacji: show errors procedure nazwaProcedury
+    (bez średnika na końcu)
+  * informacje o zdefiniowanych procedurach/funkcjach/wyzwalaczach są
+    przechowywane w tabelach USER_PROCEDURES, USER_TRIGGERS.
+
+
+      Tabele
+
+------------------------------------------------------------------------
+
+Deklaracje
+
+DECLARE
+  TYPE t_tab IS TABLE OF VARCHAR(20) INDEX BY BINARY_INTEGER;
+  tab t_tab;
+
+Operacje na tabelach:
+
+tab(i)           --i-ty element
+tab.EXISTS(i)    --czy i-ty jest określony
+tab.COUNT        --liczba elementów
+tab.FIRST        --pierwszy element tabeli
+tab.LAST         --ostatni element tabeli
+tab.PRIOR(i)     --poprzednik i-tego
+tab.NEXT(i)      --nastepnik i-tego
+tab.DELETE       --usuń zawartość tabeli
+tab.DELETE(i)    --usuń i-ty element
+tab.DELETE(i,j)  --usuń elementy od i do j
+
+
+      Kursory służące do zmiany danych
+
+------------------------------------------------------------------------
+
+DECLARE
+  CURSOR nazwaKursora
+      IS zapytanieSQL
+  FOR UPDATE OF lista_kolumn;
+
+Różni się od zwykłego kursora zakładaniem blokady na modyfikowane pola.
+
+Przykład:
+
+DECLARE
+  CURSOR c_ksiazki IS SELECT * FROM ksiazki FOR UPDATE OF tytul;
+BEGIN
+  FOR k IN c_ksiazki LOOP
+    dbms_output.put_line('ksiazka '||k.nr_ew);
+    UPDATE ksiazki SET tytul=tytul||'_a' WHERE nr_ew=k.nr_ew;
+  END LOOP;
+END;
+/
+
+
+      Procedury
+
+------------------------------------------------------------------------
+
+PROCEDURE nazwa [(parametr 1[, parametr 2, ...])] IS
+   deklaracje zmiennych
+BEGIN
+  treść procedury
+[EXCEPTION
+   obsauga wyjątków]
+END [nazwa];
+
+Denicja parametry ma następującą postać:
+
+nazwa parametru [IN | OUT [NOCOPY] | IN OUT [NOCOPY]] typ
+    [{:= | DEFAULT} wyrażenie]
+
+  * IN - przekazanie parametru przez wartość,
+  * OUT - parametr musi być zmienn¡, zachowuje się jak niezainicjalizowana
+    zmienna (pocz¡tkowo przechowuje pust¡ wartość),
+  * IN OUT - parametr musi być zmienn¡, zachowuje si¦ jak zainicjalizowana
+    zmienna,
+  * NOCOPY - przekazywanie parametrów przez referencje.
+
+Komunikaty o błędach kompilacji można zobaczyć wykonuj¡c polecenie:
+
+SHOW errors procedure nazwa;
+
+Aby wywołać procedurę z poziomu sqlplusa, należy wykonać polecenie:
+
+execute nazwaProcedury(wartość1,wartość2);
+execute nazwaProcedury(nazwa1 => wartość1,nazwa2 => wartość2);
+execute nazwaProcedury; /* jeśli procedura nie ma parametrów */
+
+W niektórych przypadkach można najpierw zadeklarować funkcję, a dopiero
+później podać jej treść, np.
+
+PROCEDURE nazwa ( .. definicja parametrów .. );
+
+Zgłaszanie błędów, działanie programów można przerwać za pomoc¡ funkcji
+raise_application_error, np.
+
+RAISE_APPLICATION_ERROR(kod,komunikat);
+RAISE_APPLICATION_ERROR(-20000,'bardzo ważny błąd');
+
+Kody od -20999..-20000 są zarezerwowane dla użytkowników.
+
+
+      Funkcje
+
+------------------------------------------------------------------------
+
+FUNCTION nazwa [(parametr 1,[ parametr 2, ...])] RETURN typ IS
+   [deklaracje zmiennych]
+BEGIN
+   treść
+[EXCEPTION
+   obsługa wyjątków]
+END [nazwa];
+
+W treści funkcji należy użyć polecenia RETURN, które zwraca wynik i kończy
+działanie funkcji (dokładnie tak jak w C/C++).
+
+Komunikaty o błędach kompilacji można zobaczyć wykonując polecenie:
+
+SHOW errors FUNCTION nazwa;
+
+Informacje o procedurach i funkcjach można otrzymać za pomoc¡ poleceń:
+
+DESCRIBE PROCEDURE nazwa
+DESCRIBE FUNCTION nazwa
+
+
+      Pakiety
+
+------------------------------------------------------------------------
+
+CREATE PACKAGE nazwa AS
+   PROCEDURE procedura1 (...);
+   PROCEDURE precedura2;
+   ...
+END emp_actions;
+ 
+CREATE PACKAGE BODY nazwa AS
+   PROCEDURE procedura1 (...) IS
+   BEGIN
+   END procedura1;
+ 
+   PROCEDURE procedura2 IS
+   BEGIN
+   END procedura2;
+   ...
+END nazwa;
+
+
+      Wyzwalacze
+
+------------------------------------------------------------------------
+
+Wyzwalacze to fragmenty programów wykonywane w przypadku zajęcia
+określonych operacji na bazie danych. Wyzwalacze s¡ wykonywane
+automatycznie przez bazie danych.
+
+Do czego mogą służyć wyzwalacze:
+
+  * kontroli poprawno±ci danych,
+  * logowania zmian na bazie,
+  * sprawdzania uprawnień do wykonywania poszczególnych operacji.
+
+CREATE [OR REPLACE] TRIGGER nazwa
+    {BEFORE|AFTER} {INSERT|DELETE|UPDATE} ON nazwa tabeli
+    [REFERENCING [NEW AS nazwa_nowego_wiersza] [OLD AS nazwa_starego_wiersza]]
+    [FOR EACH ROW [WHEN (warunek)]]
+    treść wyzwalacza
+
+Wyzwalacze mogą być uruchamiane:
+
+  * jednokrotnie dla każdego wiersza (klauzula FOR EACH ROW),
+  * jednokrotnie dla każdego polecenia,
+
+Kolejność wykonywania wyzwalaczy:
+
+  * przed instrukcj¡,
+  * przed pierwszym operowanym wierszem
+  * po pierwszym wierszu ...
+  * przed ostatnim wierszem
+  * po ostatnim wierszu
+  * po instrukcji
+
+W wyzwalaczach nie wolno używać operacji związanych z transakcjami
+(COM-MIT, ROLLBACK).
+Po zdefiniowaniu wyzwalacza, baza może stwierdzić, że kompilacja się
+nie powiodła. Komunikaty o błędach można zobaczyć wykonuj¡c polecenie:
+
+|show errors trigger nazwaWyzwalacza;|
+
+Inne polecenia dotycz¡ce wyzwalaczy:
+
+  * select trigger_name from user_triggers - lista zdeniowanych wyzwalaczy,
+  * select trigger_type, triggering_event, table_name, referencing_names,
+    trigger_body from user_triggers where trigger_name = 'bazwa' -
+    dokaadne informacje konkretnym wyzwalaczu,
+  * drop trigger nazwaWyzwalacza - usuwanie,
+  * alter trigger nazwaWyzwalacza {disable|enable} -
+    wyłączenie/włączenie wyzwalacza.
+
+Odwołania do wartości zmienianych wierszy:
+
+  * :OLD.nazwa_pola - wartości przed zmian¡/usunięciem,
+  * :NEW.nazwa_pola - wartości po zmianie/wstawieniu,
+
+Można definiować jeden wyzwalacz dla wielu zdarzeń, np.
+
+CREATE OR REPLACE TRIGGER TestowyWyzwalacz
+    BEFOR INSERT OR UPDATE OR DELETE ON tabela
+    FOR EACH ROW
+BEGIN
+  IF INSERTING THEN
+    ...
+  ELSIF DELETING THEN
+    ...
+  ELSIF UPDATING THEN
+    ...
+  END IF;
+END;
+
+
+      SQL - różności
+
+------------------------------------------------------------------------
+
+Widoki:
+
+CREATE VIEW nazwa AS zapytanie_sql;
+
+Sekwencje:
+
+CREATE SEQUENCE nazwa
+[   INCREMENT BY wartość ]
+[   START WITH wartość ]
+;
+SELECT nazwa_sekwencji.NEXTVAL FROM dual; /* zwraca wartość + zwiększa licznik */
+SELECT nazwa_sekwencji.CURRVAL FROM dual; /* zwraca wartość + bez zwiększania licznika */
+
+*/Ćwiczenie./* Napisz procedurę wypisującą ostatnie 10 wypożyczeń książek.
+
+Rozwiązanie
+
+
+CREATE OR REPLACE PROCEDURE PokazWypozyczenia IS
+  CURSOR c_w IS
+  SELECT w.*,k.tytul,c.imie,c.nazwisko 
+    FROM wypozyczenia w LEFT JOIN czytelnicy c ON (w.pesel=c.pesel)
+     LEFT JOIN ksiazki k ON (w.nr_ew=k.nr_ew)
+    ORDER BY w.data_wypozyczenia DESC,w.pesel ASC,w.nr_ew ASC;
+BEGIN
+  FOR tmp IN c_w LOOP
+    EXIT WHEN c_w%ROWCOUNT = 11;
+    dbms_output.put_line('data: '||TO_CHAR(tmp.data_wypozyczenia,'YYYY-MM-DD HH24:MI')||
+  ' nr_ew: '||tmp.nr_ew||' ('||tmp.tytul||') pesel: '||TRIM(tmp.pesel)||
+  ' ('||tmp.imie||' '||tmp.nazwisko||')');
+  END LOOP;   
+END;
+/
+-- aby uruchomić procedurę napisz: execute PokazWypozyczenia
+
+*/Ćwiczenie./* Napisz funkcję, która otrzymuje jako parametr numer
+ewidencyjny książki i zwraca ile razy była ona wypożyczona.
+
+Rozwiązanie
+
+
+CREATE OR REPLACE FUNCTION LiczbaWypozyczen (p_nr_ew IN NUMBER) 
+  RETURN NUMBER IS
+  ile INT;
+BEGIN
+  SELECT COUNT(*) INTO ile FROM wypozyczenia WHERE nr_ew=p_nr_ew; 
+  RETURN ile;
+END;
+/
+-- aby uruchomić procedurę napisz: select nr_ew,LiczbaWypozyczen(nr_ew) FROM ksiazki
+
+*/Ćwiczenie./* Sprawdź jakie procedury i funkcje są zdefiniowane w
+twojej bazie danych.
+
+Rozwiązanie
+
+
+SELECT OBJECT_NAME,PROCEDURE_NAME FROM USER_PROCEDURES;
+
+*/Ćwiczenie./* Usuń wybraną procedurę lub funkcję (np. procedurę
+PokazWypozyczenia).
+
+Rozwiązanie
+
+
+DROP PROCEDURE POKAZWYPOZYCZENIA;
+DROP FUNCTION LiczbaWypozyczen;
+
+*/Ćwiczenie./* Dodaj wyzwalacz do tabeli wypożyczenia, który będzie
+blokował wypożyczanie książek, które jeszcze nie zostały zwrócone.
+
+Rozwiązanie
+
+
+CREATE OR REPLACE TRIGGER sprawdzWypozyczenia 
+BEFORE INSERT ON wypozyczenia 
+FOR EACH ROW
+DECLARE
+  czy_wypozyczona INT;
+BEGIN
+  SELECT COUNT(*) INTO czy_wypozyczona FROM wypozyczenia WHERE nr_ew=:NEW.nr_ew AND data_zwrotu IS NULL;
+  IF czy_wypozyczona &gt; 0 THEN
+      raise_application_error(-20000,'Książka jest jeszcze wypożyczona');
+  END IF;
+END;
+/
+DELETE FROM wypozyczenia WHERE nr_ew=2;
+INSERT INTO wypozyczenia VALUES (2,'001','01-OCT-10',NULL); 
+INSERT INTO wypozyczenia VALUES (2,'001','20-OCT-10','19-OCT-10');
+
+*/Ćwiczenie./* Usuń wyzwalacz SprawdzWypozyczenia z tabeli wypożyczenia.
+
+Rozwiązanie
+
+
+DROP TRIGGER SprawdzWypozyczenia;
+
+*/Ćwiczenie./* Dodaj wyzwalacz do tabeli wypożyczenia, który będzie
+uniemożliwiał wprowadzanie wypożyczeń z datą zwrotu mniejszą niż data
+wypożyczenia.
+
+Rozwiązanie
+
+
+CREATE OR REPLACE TRIGGER sprawdzWypozyczenia 
+BEFORE INSERT OR UPDATE ON wypozyczenia 
+FOR EACH ROW
+BEGIN
+    IF :NEW.data_wypozyczenia IS NOT NULL AND :NEW.data_zwrotu IS NOT NULL THEN
+      IF :NEW.data_wypozyczenia &gt; :NEW.data_zwrotu THEN
+        raise_application_error(-20000,'Data zwrotu musi być większa niż data wypożyczenia');
+      END IF;
+    END IF;
+END;
+/
+INSERT INTO wypozyczenia VALUES (1,'001','01-OCT-10','02-OCT-10'); 
+INSERT INTO wypozyczenia VALUES (1,'001','20-OCT-10','19-OCT-10');
+
+*/Ćwiczenie./* Dodaj wyzwalacz do tabeli wypożyczenia, który będzie
+uniemożliwiał wypożyczanie więcej niż 10 książek jednocześnie dla jednej
+osoby.
+
+Rozwiązanie
+
+
+CREATE OR REPLACE TRIGGER sprawdzWypozyczenia 
+BEFORE INSERT ON wypozyczenia  
+FOR EACH ROW
+DECLARE
+  ile INT;
+BEGIN
+  SELECT COUNT(*) INTO ile FROM wypozyczenia WHERE pesel=:NEW.pesel AND data_zwrotu IS NULL;
+  IF :NEW.data_zwrotu IS NULL THEN
+    ile:=ile+1;
+  END IF;
+  IF ile &gt; 10 THEN 
+    raise_application_error(-20001,'Przekroczono limit wypożyczeń na jedną osobę');
+  END IF;
+END;
+/
+
+*/Ćwiczenie./* Dodaj wyzwalacz do tabeli książki, który będzie
+automatycznie nadawał kolejne numery ewidencyjne.
+
+Rozwiązanie (działa poprawnie tylko gdy dodajemy pojedyncze wiersze):
+
+
+CREATE OR REPLACE TRIGGER dodajKsiazke
+BEFORE INSERT ON ksiazki
+FOR EACH ROW
+BEGIN
+  IF :NEW.nr_ew IS NULL THEN
+    SELECT NVL(MAX(nr_ew),0)+1 INTO :NEW.nr_ew FROM ksiazki;
+  END IF;
+END;
+/
+INSERT INTO ksiazki (autor,tytul) VALUES ('aaa1','ttt1');
+INSERT INTO ksiazki (autor,tytul) VALUES ('aaa2','ttt2');
+
+
+  Laboratorium 7: klucze zewnętrzne, warunki spójności
+
+
+      SQL
+
+------------------------------------------------------------------------
+
+  * opcje kluczy obcych - domyślnie, baza uniemożliwia usuwanie wierszy
+    na które wskazują klucze obce, możemy jednak wskazać inne
+    zachowanie, tzn. on delete cascade powoduje usuwanie wierszy przy
+    kasowaniu obiektów na które wskazują klucze obce, lub on delete set
+    null powoduje zamienie wartości przez NULL przy kasowaniu obiektów
+    na które wskazują klucze obce:
+
+k_id varchar(16) REFERENCES tab1, 
+k_id2 varchar(16) REFERENCES tab2 ON DELETE cascade, 
+k_id3 varchar(16) REFERENCES tab2 ON DELETE SET NULL,
+
+  * klucze obce składające się w wielu kolumn
+
+CREATE TABLE a (
+  id integer,
+  a integer,
+  b integer,
+  CONSTRAINT fk_abc FOREIGN KEY (a,b) REFERENCES inna_tabela (id,kod)
+);
+
+  * usuwanie tabeli wraz z wszystkimi tabelami zależnymi:
+
+drop table nazwa cascade constraints;
+
+  * zamiana definicji tabeli,
+
+ALTER TABLE nazwa_tabeli ADD (nazwa_kolumny typ);
+ALTER TABLE nazwa_tabeli MODIFY (nazwa_kolumny typ);
+ALTER TABLE nazwa_tabeli DROP (nazwa_kolumny);
+ALTER TABLE nazwa_tabeli ADD (constraint nazwa definicja);
+ALTER TABLE nazwa_tabeli enable constraint nazwa;
+ALTER TABLE nazwa_tabeli disable constraint nazwa; -- czasowe wyłączenie więzów spójności
+
+  * tworzenie i usuwanie indeksów
+
+    CREATE [ UNIQUE ] INDEX nazwa_indeksu ON nazwa_tabeli (kol1 [ ASC|DESC ], kol2 ... );
+    DROP INDEX nazwa_indeksu; -- usuwanie
+
+      o pseudokoluman ROWNUM
+
+    SELECT ROWNUM,id FROM tabela;
+    SELECT * FROM tabela WHERE ROWNUM <10;
+    -- uwaga!! ale nie SELECT * FROM tabela WHERE ROWNUM <10;
+
+      o synonimy (skrócone nazwy tabeli i perspektyw)
+
+    CREATE SYNONYM nazwa FOR nazwa_tabeli;
+    DROP SYNONYM nazwa;
+
+      o Typy danych: BLOB (binarne duże obiekty), CLOB (tekstowe duże
+        obiekty), LOB (binarne lub testowe).
+        Funkcje EMPTY_BLOB(), EMPTY_CLOB() zwracają puste obiekty.
+
+
+          PL/SQL
+
+    ------------------------------------------------------------------------
+
+      o wyrażenia regularne
+        <http://www.oracle.com/technology/oramag/oracle/03-sep/o53sql.html>
+      o utl_http
+        <http://download-west.oracle.com/docs/cd/B10501_01/appdev.920/a96612/u_http.htm> -- pakiet obsługujący połączenia HTTP,
+      o PL/SQL Web Toolkit Reference
+        <http://download-uk.oracle.com/docs/cd/A97329_03/web.902/a90101/toc.htm>, krótki opis htp <http://www.psoug.org/reference/htp.html> -- pakiety obsługujące generowanie stron HTML,
+    ------------------------------------------------------------------------
+
+    */Ćwiczenie./* Zmień rozmiar pola imię w tabeli czytelnicy z 64
+    znaków na 32 znaki.
+
+Rozwiązanie
+
+
+ALTER TABLE czytelnicy MODIFY (imie VARCHAR(32));
+
+*/Ćwiczenie./*Zmień definicję kluczy obcych w bazie biblioteki, tak by
+były typu ON DELETE CASCADE. Sprawdź jak teraz działa usuwanie elementów
+tablicy czytelnicy.
+
+Rozwiązanie
+
+
+-- SYS_C00412589 trzeba zastąpić odpowiednią wartością
+ALTER TABLE wypozyczenia DROP CONSTRAINT SYS_C00412589; 
+ALTER TABLE wypozyczenia ADD (
+   CONSTRAINT fk_pesel FOREIGN KEY (pesel) 
+   REFERENCES czytelnicy ON DELETE cascade
+);
+
+*/Ćwiczenie./* Dodaj indeksy: idx_data_w zawierający pole
+data_wypozyczenia, oraz idx_data_z zawierający pole data_zwrotu, do
+tabeli wypożyczenia .
+
+Rozwiązanie
+
+
+CREATE INDEX idx_data_w ON wypozyczenia (data_wypozyczenia);
+CREATE INDEX idx_data_z ON wypozyczenia (data_zwrotu);
+
+*/Ćwiczenie./* Wypisz książki których tytuły składają się z co najmniej
+dwóch wyrazów.
+
+Rozwiązanie
+
+
+SELECT nr_ew,tytul FROM ksiazki WHERE REGEXP_LIKE(tytul,' ');
+
+*/Ćwiczenie./* Wczytaj i wypisz zawartość strony stencel.mimuw.edu.pl
+<http://stencel.mimuw.edu.pl/>.
+
+Rozwiązanie
+
+
+SET serveroutput ON SIZE 100000 
+DECLARE
+  req   utl_http.req;
+  resp  utl_http.resp;
+  value VARCHAR2(8192);
+BEGIN
+  req := utl_http.begin_request('http://stencel.mimuw.edu.pl');
+  resp := utl_http.get_response(req);
+  LOOP
+    utl_http.read_line(resp, value, TRUE);
+    /* niestety funkcja put_line jest ograniczona do 255 znaków */ 
+    loop
+      exit when value IS NULL;
+      dbms_output.put_line( substr( value, 1, 250 ) );
+      value := substr( value, 251 );
+    end loop;
+  END LOOP;
+  utl_http.end_response(resp);
+EXCEPTION
+  WHEN utl_http.end_of_body THEN
+    utl_http.end_response(resp);
+END;
+/
+
+*/Ćwiczenie./* Wypisz wszystkie odnośniki ze strony stencel.mimuw.edu.pl
+<http://stencel.mimuw.edu.pl/>
+
+Rozwiązanie
+
+
+SET serveroutput ON SIZE 100000 
+DECLARE
+  req   utl_http.req;
+  resp  utl_http.resp;
+  value VARCHAR2(8192);
+  s     varchar2(200);
+  link  varchar2(200);
+  title varchar2(200);
+BEGIN
+  req := utl_http.begin_request('http://stencel.mimuw.edu.pl');
+  resp := utl_http.get_response(req);
+  LOOP
+    utl_http.read_line(resp, value, TRUE);
+    s:=regexp_substr(value,'&lt;a[^&gt;]+href="[^"]+"[^&gt;]*&gt;.*&lt;/a&gt;',1,1,'i');
+    IF s IS NOT NULL then
+      link:=regexp_replace(s,'^.*href="([^\"]+)".*$','\1',1,1,'i');
+      title:=regexp_replace(s,'^.*&gt;(.*)&lt;/a&gt;$','\1',1,1,'i');
+      IF link IS NOT NULL then
+        dbms_output.put_line('href: '||link||' title: '||title);
+      else 
+        dbms_output.put_line('dziwny link: '||s);
+      end IF;
+    end IF;
+  END LOOP;
+  utl_http.end_response(resp);
+EXCEPTION
+  WHEN utl_http.end_of_body THEN
+    utl_http.end_response(resp);
+END;
+/
+
+
+  Laboratorium 8: Oracle Designer
+
+
+      Projektowanie baz danych przy pomocy Oracle Designer
+
+------------------------------------------------------------------------
+
+Przydatne adresy:
+
+  * Oracle Designer Narzędzie Case, autor Jacek Sroka
+    <http://stencel.mimuw.edu.pl/abwi/20011113/>
+  * Instrukcaj obsługi, autor Jacek Sroka
+    <http://www.mimuw.edu.pl/%7Esroka/archiwalne/2007bd/lab6/designer/designer.html>
+  * Dokumentacja oracle:dokumentacja
+    <http://www.oracle.com/technetwork/developer-tools/designer/documentation/documentation-093936.html>,
+
+
+  Laboratorium 9: SQL Developer Modeler
+
+
+      Oracle SQL Developer Data Modeler:
+
+------------------------------------------------------------------------
+
+  * download (wymaga rejestracji)
+    <http://www.oracle.com/technetwork/developer-tools/datamodeler/downloads/index.html>
+  * dokumentacja
+    <http://www.oracle.com/technetwork/developer-tools/datamodeler/documentation/index.html>
+  * prezentacja
+    <http://www.oracle.com/technetwork/developer-tools/datamodeler/sqldeveloperdatamodelertechreview-167686.html>
+  * tutorial: Re-engineering Your Database Using Oracle SQL Developer
+    Data Modeler
+    <http://st-curriculum.oracle.com/obe/db/sqldevdm/r20/updatedb/UpdateDB.html>
+
+
+  Laboratorium 10: łącze oracle PHP
+
+
+      Smarty
+
+------------------------------------------------------------------------
+
+  * PHP -- dokumentacja <http://www.php.net/manual/en/>
+  * Oracle PHP FAQ <http://www.orafaq.com/wiki/PHP_FAQ>
+  * przykladowe programy (strona K. Stencla)
+    <http://stencel.mimuw.edu.pl/bd/PHP/>
+  * Oficjalna strona biblioteki Smarty <http://www.smarty.net/>
+  * smarty.incution.com <http://smarty.incutio.com/> -- dodatkowe
+    informacje, sztuczki, przykładowe pluginu
+
+
+      Pear
+
+------------------------------------------------------------------------
+
+  * Oficjalna strona PEAR <http://pear.php.net/>
+
+
+  Laboratorium 11: javascript
+
+
+    JavaScript i jQuery
+
+------------------------------------------------------------------------
+
+
+      Podstawowe cechy
+
+  * Język programowania stosowany do opisywania dynamicznych elementów
+    stron WWW.
+  * Interpretowany
+  * Obiektowy (prototypy)
+  * Skryptowy
+  * Funkcje są „obywatelami pierwszej klasy”
+  * Dynamiczny
+  * Słabo typowany
+
+
+      Hello World
+
+ 1. Otwórz jakąś przeglądarkę
+ 2. Wpisz w pasku adresu:
+
+    javascript:alert(”Hello, World!”);
+
+
+      Hello World w pliku
+
+  * Sposób 1:
+
+    <script type="text/javascript" src="hello.js"></script>
+
+  * W hello.js:
+
+    alert(”Hello, World!”);
+
+  * Sposób 2:
+
+    <script type="text/javascript">
+     alert(”Hello, World!”);
+    </script>
+
+
+      Zmienne
+
+  * Słabe typowanie
+  * Deklarujemy następująco:
+
+    var foo;
+
+  * Można zainicjalizować:
+
+    var foo = ”bar”;
+
+  * Przypisania:
+
+    foo = 8;
+
+
+      Prymitywy
+
+  * Boolean
+
+    var foo = true;
+    var bar = false;
+
+  * Numeric
+
+    var dwa = 2;
+    var trzyipol = 3.5;
+
+  * String
+
+    var s = ”String”;
+
+
+      Tablice
+
+  * Tworzenie:
+
+    var fib = new Array(0, 1, 1, 2, 3);
+    var fib = [0, 1, 1, 2, 3];
+
+  * Można mieszać typy:
+
+    fib[1] = ”jeden”;
+
+
+      Operatory
+
+  * Takie same, jak w Javie.
+  * ===, !== - identyczność, bądź jej brak
+  * typeof x – string opisujący typ x
+  * o instanceof c - sprawdza, czy obiekt o został stworzony przez
+    konstruktor c
+  * delete x – usuwa obiekt
+  * new cl – nowy obiekt typu cl. cl musi być konstruktorem
+
+
+      Funkcje
+
+  * W pliku hello.js:
+
+     function helloWorld() {
+       alert("Hello, World!");
+     }
+
+  * W pasku adresu:
+
+       javascript:helloWorld();
+
+
+      Ulubiony przykład
+
+function fib(n) {
+  if (n == 0) {
+    return 0;
+  } else if (n == 1) {
+    return 1;
+  } else {
+    return fib(n-1) + fib(n-2);
+  }
+}
+
+
+      Lambda abstrakcja
+
+var twice = function(n) {
+  return 2 * n;
+}
+
+
+      Obiekty
+
+  * Są tworzone za pomocą konstruktorów:
+
+    function Osoba(imie) {
+      this.imie = imie;
+    }
+     
+    var Jan = new Osoba(”Jan”);
+
+  * Ich pola są domyślnie inicjalizowane przez wartości określone w
+    prototypach
+
+    Osoba.prototype.nazwisko = ”Kowalski”;
+     
+    Jan = new Osoba(”Jan”);
+     
+    //teraz Jan.nazwisko == ”Kowalski”
+
+  * Można to wykorzystać do dziedziczenia.
+  * Inna notacja pozwalająca tworzyć obiekty – literały obiektów:
+
+    Jan = { 'imię': 'Jan', 'nazwisko': 'Kowalski' }
+
+
+      Obsługa zdarzeń (Event handling)
+
+  * Specjalne atrybuty zaczynające się na on:
+
+    var helloWorld = function(evt) {
+      alert("Hello, World!");
+    }
+     
+    document.onclick = helloWorld;
+
+  * Bardzo użyteczny jest window.onload, który jest wywoływany po
+    załadowaniu dokumentu.
+
+
+      DHTML
+
+  * Dynamic HTML
+  * Drzewo DOM (Dynamic Object Model) – umożliwia dowolną modyfikację
+    całego dokumentu HTML.
+
+
+      Znajdowanie elementów
+
+  * Służą do tego metody obiektu document:
+
+    document.getElementById(”id”);
+    document.getElementsByTagname(”p”);
+
+
+      Dodawanie elementów
+
+  * Do tworzenia elementów służy metoda obiektu document:
+
+    var div = document.createElement(”div”);
+    div.id = ”someDiv”;
+    div.class = ”someClass”;
+
+  * Można teraz dodać nowy element do dokumentu:
+
+    document.documentElement.appendChild(div);
+
+
+      Modyfikacja elementów
+
+  * Można zmieniać atrybuty HTML za pomocą atrybutów javascriptowych
+    obiektów:
+
+    document.getElementById(”someDiv”).class = ”otherClass”;
+
+  * Atrybut style modyfikuje styl css
+
+    document.getElementById('someDiv').style.color = 'red';
+
+
+      Usuwanie elementów
+
+  * Metoda removeChild obiektu dokument:
+
+    div = document.getElementById(”someDiv”);
+    document.removeChild(div);
+
+
+      jQuery
+
+  * Biblioteka JavaScript, która wszystko ułatwia.
+  * Przenośność między przeglądarkami.
+  * Łatwa nawigacja po drzewie DOM.
+  * Łatwa obsługa eventów.
+  * Łatwa dynamiczna zmiana stylów CSS.
+  * Łatwy AJAX
+  * Efekty i animacje.
+  * Narzędzia ułatwiające pracę.
+  * Dużo pluginów.
+
+
+      Pierwszy przykład
+
+ 1. Dodaj między |<body></body>:|
+
+    <a href="http://jquery.com/">jQuery</a>
+
+ 2. Dodaj między |<script></script>:|
+
+    $(document).ready(function() {
+      $(”a”).click(function(event) {
+       alert(”Hello, jQuery!”);
+       event.preventDefault();
+      });
+    });
+
+
+      jQuery i DOM
+
+  * Selektory umożliwiają łatwe wybieranie elementów z drzewa DOM:
+
+    $(".someClass").css("border", "red");
+    $("#someId").html(”Modified with jQuery”);
+
+  * Różne rodzaje selektorów:
+
+    $(”#someId > p”) - wszystkie elementy typu p, które są dziećmi elementu o Id someId
+    $("p[@class]") – wszystkie elementy typu p z atrybutem class 
+    $("p.foo[a]") – wszystkie elementy typu p, klasy foo, które zawierają element typu a.
+
+
+      jQuery i eventy
+
+$(”p.shy”).click(function() {
+  $(this).hide(”slow”);
+});
+
+  * Wszystkie paragrafy klasy shy schowają się po kliknięciu.
+
+
+      jQuery i AJAX
+
+  * http://students.mimuw.edu.pl/~jb291470/js/post.html
+    <http://students.mimuw.edu.pl/~jb291470/js/post.html>
+
+
+    JavaScript
+
+------------------------------------------------------------------------
+
+
+      Czym jest JavaScript
+
+  * Językiem stworzonym przez Netscape w 1995 roku
+  * Interpretowanym językiem skryptowym działającym po stronie klienta
+  * i obiektowym
+  * i wspierającym programowanie funkcyjne (domknięcia i funkcje
+    wyższego rzędu)
+
+
+      Do czego można stosować JS
+
+  * Dynamiczne zmienianie wyglądu i zawartości strony w odpowiedzi na
+    akcje użytkownika
+  * Kontrolowanie ramek, apletów i pluginów
+  * Otwieranie nowych okien, pobieranie informacji o przeglądarce,
+    tworzenie plików cookies
+  * Przetwarzanie żądań przed ich wysłaniem do serwera WWW
+
+
+      Do czego nie można stosować JS
+
+  * Uruchamiania zewnętrznych aplikacji
+  * Odczytywania i zapisywania plików na dysku użytkownika
+  * Wysyłania sekretnych e-maili ze strony
+  * Zmiany parametrów przeglądarki, przycisków nawigacyjnych
+
+
+      Elementy z których składa się JS
+
+  * Jądro(EMAScript) - definiuje składnie, typy, wyrażenia...
+  * DOM - programistyczny interfejs do obsługi html i xml
+  * BOM - programistyczny interfejs do obsługi przeglądarki
+
+
+      Składnia
+
+  * Wszystko jest case-sensitive
+  * Zmienne są słabo typowaIne
+  * Nie trzeba stawiać średników na końcu linii
+  * Komentarze jak w Javie (/* */ i //)
+  * Bloki kodu są zawarte w { }
+
+
+      Zmienne
+
+  * Definiowanie za pomocą słowa kluczowego var
+  * Można im zmieniać typy
+  * Nazwy zaczynają się od litery, $ albo_
+
+
+      Instrukcje
+
+  * if then else, switch, for ..., while..., do cos while... jak w C++
+  * for (zmienna in object) cos
+
+
+      Przykład 1
+
+<head>
+<script type="text/javascript">
+function notEmpty() {
+  var myTextField = document.getElementById('myText');
+  if(myTextField.value != " ")
+    alert("You entered: "+ myTextField.value)
+  else
+    alert("Would you please enter some text?")
+} </script>
+</head>
+<body>
+<script type="text/javascript">
+document.write("Wpisz tekst:");
+</script>
+<input type='text' id='myText' /> <input type='button'
+onclick='notEmpty()' value='Form Checker' /> </body>
+
+
+      Przykład 2 - suma
+
+function sum(numbers) {
+  var total = 0
+  forEach(numbers, function (number) {
+    total += number
+  })
+  return total
+}
+alert(sum([1, 10, 100]));
+
+
+      Klasa Object
+
+Właściwości:
+
+  * constructor - referencja do funkcji która stworzyła obiekt
+  * prototype - referencja do prototypu obiektu
+
+Metody:
+
+  * hasOwnProperty(property) - czy obiekt ma własność
+  * isPrototypeOf(object) - czy jest prototypem
+  * toString() - konwersja na String
+  * propertylsEnumerable(property) czy właściwości można użyć w for
+
+
+      Przykład 3 - Obiekt
+
+var cat = {colour: "grey", name: "Spot", size: 46};
+cat.speak = function(line) {
+ print("The cat says '", line, " " ');
+}
+cat.size = 
+yellow";
+alert(cat.size);
+delete cat.size;
+alert(cat.size);
+alert(cat.speak("Cześć"));
+alert(cat);
+
+
+      Przykład 4 - Obiekt
+
+function Rabbit(adjecitve) {
+  this.adjective = adjective;
+  this.speak = function(line) {
+    print("The ", this.adjective, " rabbit says '", line, " " ');
+  };
+}
+var = new Rabbit("krolik");
+function makeRabbit(adjective) {
+  return {
+    adjective: adjective,
+    speak: function(line) { tresc funkcji }
+  };
+}
+var blackRabbit = makeRabbit("black");
+
+
+      Klasa Array
+
+  * var a = new Array(100), b = new Array(), c = new Array("a", "b", "c")
+  * a.length - długość tablicy
+  * sort() - sortuje toString
+  * slice(), concat(), reverse()
+  * push() i pop() robia z tablicy stos
+
+
+      inne klasy
+
+  * Function
+  * Date
+  * Global
+  * Math
+  * RegExp
+
+
+      Przykład 5
+
+function negate(func) {
+  return function(x) {
+    return !func(x)
+  };
+}
+var isOdd = negate(isEven);
+
+
+      Czym jest jQuery
+
+  * Cross-browserowa biblioteka JavaScript napisana aby ułatwiać pisanie
+    własnych skryptów
+  * Składnia zaprojektowana jest aby łatwo posługiwać się DOM, tworzyć
+    animacje, obsługiwać zdarzenia
+  * Duże wsparcie dla AJAX
+
+    <script type="text/javascript" source="jquery.js"/>
+
+
+      Przykłady
+
+$("#someId").html("<b>So Bold!</b>");
+$(document).ready(function() {
+ $("a").click(function(event) {
+  alert("Thanks for visiting');
+ });
+}
+
+$(document).ready(function() {
+ $("#orderedlist li:last").hover(function() {
+  $(this).addClass("green");
+ },function(){
+ $(this).removeClass("blue");
+ });
+});
+
+$.ajax({
+ type: "POST",
+ url: "some.php",
+ data: "name=John&location=Boston",
+ success: function(msg){
+  alert( "Data Saved: " + msg );
+ }
+});
+
+$.post("test.php", { name: "John", time: "2pm" },
+ function(data){
+  alert("Data Loaded: " + data);
+});
+$.get("test.php", { name: "John", time: "2pm" },
+ function(data){
+  alert("Data Loaded: " + data);
+});
+
+
+    Dostęp do baz danych ORACLE za pomocą PHP
+
+------------------------------------------------------------------------
+
+  * Moduły OCI8 i ORA
+  * Nawiązywanie połączenia
+  * Obsługa błędów
+  * Operacje na danych
+  * Zapytania SQL
+  * PL/SQL
+  * Przykłady
+  * http://students.mimuw.edu.pl/~rb291513/
+    <http://students.mimuw.edu.pl/~rb291513/>
+
+
+      Moduły OCI8 i ORA
+
+  * Do dyspozycji mamy dwa moduły:
+  * - Oracle Call-Interface functions (OCI8)
+  * - Oracle 7 functions (ORA)
+  * OCI8 – zoptymalizowany, duże możliwości, na nim się skupimy
+  * ORA – przestarzały, nowsze wersje PHP go nie zawierają – nie używać.
+
+
+      Połączenie z Bazą danych
+
+  * oci_connect(”login”, ”hasło”, ”baza”)
+  * - zwraca identyfikator połączenia lub false w przypadku niepowodzenia
+  * oci_new_connect
+  * - jeśli chcemy kolejnego połączenia z tą samą bazą(dostaniemy nowy
+    identyfikator)
+  * oci_close(połączenie)
+
+
+      Obsługa błędów
+
+  * oci_error()
+  * - zwraca tablicę opisującą błąd lub false, jeśli żadnego nie
+    zarejestrowano.
+  * Pola w tablicy:
+  * - code
+  * - message
+  * - offset
+  * - sqltext
+
+
+      Zapytania PL/SQL:
+
+  * oci_parse(połączenie, polecenie sql/plsql)
+  * - zwraca id deklaracji lub false w przypadku błędu
+  * - nie sprawdza poprawności zapytania
+  * - SQL – nie stawiamy średnika na końcu polecenia
+  * - PL/SQL – stawiamy średnik
+  * oci_free_statement(deklaracja)
+  * - zwalnia zasoby
+
+
+      Dostęp do zmiennych:
+
+  * oci_bind_by_name(deklaracja, ”:nazwa”, zmiennaPHP)
+  * - zwraca true/false
+  * - wygodne i bezpieczne
+  * oci_bind_by_name($s, ":bind1", $var1);
+
+
+      Wykonywanie deklaracji:
+
+  * oci_execute(deklaracja, opcja)
+  * - zwraca true/false
+  * Opcje:
+  * - OCI_COMMIT_ON_SUCCES
+  * - OCI_NO_AUTO_COMMIT
+
+
+      Zatwierdzanie zmian:
+
+  * Jeśli zamkniemy połączenie to przywracana jest wersja bazy sprzed
+    wprowadzenia zmian
+  * oci_commit(połączenie)
+  * - zwraca true/false
+  * oci_rollback(połączenie)
+  * - cofa niezatwierdzone zmiany
+
+
+      Przetwarzanie wyników:
+
+  * oci_fetch(deklaracja)
+  * - przechwytuje następny wiersz
+  * - zwraca true dopóki jest jeszcze coś do przeczytania
+  * oci_result(deklaracja, pole)
+  * - zwraca wartość pola w aktualnej linii
+
+
+      Przetwarzanie wyników:
+
+  * oci_fetch_all(deklaracja, zmienna_php, ile_pomijamy, ile_czytamy, flagi)
+  * - zwraca ilość wierszy lub false w przypadku niepowodzenia
+  * Flagi:
+  * - OCI_FETCHSTATEMENT_BY_ROW
+  * - OCI_FETCHSTATEMENT_BY_COLUMN
+  * - OCI_NUM
+  * - OCI_ASSOC
+
+
+      Przykładowe użycie:
+
+  * Całość na:
+    https://students.mimuw.edu.pl/~rb291513/bd/przyklad
+    <https://students.mimuw.edu.pl/~rb291513/bd/przyklad>
+  * Połączenie z bazą danych:
+
+    $c = oci_connect("rb291513", "XXXXXX");
+    if($c){
+      echo "Jest polaczenie.<br><br>";
+    }else{
+      $err = oci_error();
+      echo "Oracle Connect Error " . $err['text'];
+      exit(0);
+    }
+
+
+      Przykładowe użycie
+
+  * Wypisywanie zawartości:
+
+    $r = oci_parse($c, "SELECT * FROM wypozyczenia");
+    oci_execute($r);
+    $rowCount = oci_fetch_all($r, $all, null, null, OCI_FETCHSTATEMENT_BY_ROW + OCI_ASSOC);
+    echo "Zawartosc tabeli WYPOZYCZENIA: <br>";
+    echo "<pre>".print_r($all, true)."</pre>";
+
+
+          Przykładowe użycie:
+
+      o Powiązanie zmiennych:
+
+    $var2 = "Scott";
+    $tab = array(2,8,19,32);
+    $s = oci_parse($c, "insert into tab1 values (:bind1, :bind2)");
+    oci_bind_by_name($s, ":bind1", $var1, 20);
+    oci_bind_by_name($s, ":bind2", $var2);
+    foreach($tab as $var1){
+      oci_execute($s);
+    }
+
+
+          Przykładowe użycie:
+
+      o Przetwarzanie wierszy jeden po drugim:
+
+        $s = oci_parse($c, "select * from tab1");
+        oci_execute($s);
+        while(oci_fetch($s)){
+          echo "COL1 = " . oci_result($s, "COL1") .
+            ", COL2 = " . oci_result($s, "COL2") . "<br>";
+        }
+
+
+              Przykładowe użycie:
+
+          + PL/SQL:
+
+            $s = oci_parse($c, "create or replace procedure powieksz(p1 in number, p2 out number) as
+                                begin p2 := p1 + 1; end;");
+            oci_execute($s);
+            $p1 = 233;
+            $s = oci_parse($c, "begin powieksz(:x1, :x2); end;");
+            oci_bind_by_name($s, ":x1", $p1);
+            oci_bind_by_name($s, ":x2", $p2, 40);
+            oci_execute($s);
+            echo $p1 . " + 1 = " . $p2; // 233 + 1 = 234
+
+
+                  Dodatki:
+
+              # Więcej informacji:
+              # - www.php.net <http://www.php.net/>
+              # - www.orafaq.com <http://www.orafaq.com/>
+              # Alternatywy:
+              # PEAR DB – obsługuje nie tylko ORACLE
+
+
+                Przydatne linki
+
+            ------------------------------------------------------------------------
+
+          + Firebug -- przydatne rozszerzenie do przegladarki
+            <http://getfirebug.com/>
+          + szablony stron: csszengarden.com <http://csszengarden.com/>
+            freecsstemplates.org <http://freecsstemplates.org/>
+
+
+  Laboratorium 12: zadanie końcowe
+
+
+      Zadanie 1
+
+------------------------------------------------------------------------
+
+Święty Mikołaj postanowił skomputeryzować swoje biuro. Twoim zadaniem
+jest przygotowanie projektu bazy danych, która będzie pełnić to zadanie.
+
+Święty Mikołaj zna wszystkie dzieci, ze sobie tylko znanych źródeł wie,
+które z nich były grzeczne, a które nie. Grzeczne dzieci przesyłają
+Mikołajowi listę prezentów, które chciałby otrzymać.
+
+Natomiast niegrzeczne mogą liczyć jedynie na rózgi.
+
+Przy dostarczaniu prezentów Mikołaj korzysta z całej sieci pomocników.
+Każdy z nich musi po świętach, przygotować szczegółowe sprawozdanie
+dotyczące wydanych prezentów. Natomiast Mikołaj chciałby mieć możliwość
+monitorowania postępu prac pomocników.
+Kolejnym problem z którym styka się Mikołaj to przygotowanie zamówień do
+fabryki zabawek. Zamówienia są przygotowywane na podstawie listy
+zamówień pochodzących od dzieci.
+
+  * rozszerz funkcjonalność bazy o jeden (dowolnie wybrany) dodatkowy
+    element (np. 1 lub 2 encje),
+  * przygotuj diagram encji,
+  * opisz dodatkowe, przyjęte przez ciebie, założenia funkcjonalne.
+
+Encje: TODO
+
+
+      Zadanie 2
+
+------------------------------------------------------------------------
+
+Dana jest baza o schemacie \( \displaystyle \ R = \ ABCDEFG\) i
+zależnościach funkcyjnych:
+
+\( \displaystyle \ F = \{BCD \to A,BEF \to D,AE \to B,A \to C,CDE \to
+A,DE \to AD,BC \to F,CE \to F,CE \to B,E \to F, \} \)
+
+  * Wyznacz wszystkie klucze.
+  * Wyznacz domkniecie zbioru atrybutów ABC.
+  * Podaj postać minimalna \( \displaystyle \mathbb{F}\).
+  * Przedstaw rozkład \( \displaystyle \ R \) do trzeciej postaci normalnej.
+  * Czy relacja \( \displaystyle \ R_2 = \ ABCD \) z zależnościami
+    funkcyjnymi
+
+    \( \displaystyle \ F_2 = \{ABC \to D,AD \to A,AB \to C,BC \to A\}\)
+    jest w postaci Boyce’a-Codda? Odpowiedz uzasadnij.
+
+Rozwiązanie
+
+
+  * klucze: \( \displaystyle \{AEG, BEG, CEG, DEG\} \),
+  * \( \displaystyle \{A, B, C\}^+ = \{A, B, C, F\}, \)
+  * \( \displaystyle \ F_{min} = \{BCD \to A, BE \to D, A \to C, DE \to
+    A, BC \to F, E \to F\} \),
+    nadmiarowe zależności: \( \displaystyle \{BEF \to D, CDE \to A, CE
+    \to F\} \),
+  * rozkład do 3-ciej postaci normalnej: \( \displaystyle \{ABCD\},
+    \{BDE\}, \{ABE\}, \{ADE\}, \{BCF\}, \{BCE\},
+    \{EF\}, \{AEG\}.\)
+  * \( \displaystyle \ F_2\) jest w postacie BCNF (klucze to \(
+    \displaystyle \ AB \) i\( \displaystyle \ BC \) )
+
