@@ -1,0 +1,53 @@
+    {
+
+        "status": "completed",
+
+        "created_date": "2023-05-12 15:55:49.913666+02:00",
+
+        "import_start_date": "2012-07-01 00:00:00.000000+02:00",
+
+        "import_stop_date": "2012-07-01 00:00:00.000000+02:00",
+
+        "patient_id": "lUMzufn2yyl8Ll+V4rEulg==",
+
+		"patient_fname": "Zygmunt",
+
+		"patient_lname": "Kowalski",
+
+        "patient_label": "1380940",
+
+        "data": {
+
+            "age": 79,
+
+            "sex": "M",
+
+            "stays": [],
+
+            "visits": [],
+
+            "country": "Polska",
+
+            "zipCode": "80-333",
+
+            "district": "GDAŃSK",
+
+            "locality": "Gdańsk",
+
+            "province": null,
+
+            "birthYear": "1943",
+
+            "deathDate": null,
+
+            "addressTypeCode": "STAŁY",
+
+            "addressTypeName": "Adres stały / siedziby, używany w dokumentacji PESEL 43120801123",
+
+            "district_teryt_code": "2261",
+
+            "applicated_drugs": [],
+
+            "unassigned_examinations": []
+
+        }
